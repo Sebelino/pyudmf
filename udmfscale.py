@@ -37,6 +37,9 @@ class TranslationUnit(Node):
             return cls(*lst)
         return Group(expr).setParseAction(group_action)
 
+    def __str__(self):
+        return "\n\n".join(str(e) for e in self.global_expr_list)
+
 
 class Assignment(Node):
     def __init__(self, identifier, value):
@@ -79,8 +82,8 @@ class Block(Node):
         return Group(expr).setParseAction(group_action)
 
     def __str__(self):
-        expressions_str = " ".join(e for e in self.expressions)
-        return "{} {{}}".format(self.identifier, expressions_str)
+        expressions_str = "\n    ".join(str(e) for e in self.expressions)
+        return "{} {{\n    {}\n}}".format(self.identifier, expressions_str)
 
 
 def parse_udmf(textmap_string: str):
