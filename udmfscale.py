@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from abc import abstractmethod, ABCMeta
 
+import sys
 from pyparsing import Word, alphas, alphanums, Literal, Combine, Optional, nums, QuotedString, ZeroOrMore, \
     Group
 
@@ -121,14 +122,8 @@ def parse_udmf(textmap_string: str):
 
 
 if __name__ == '__main__':
-    path = "/home/sebelino/.config/gzdoom/deutex/TEXTMAP.lmp"
-    # path = sys.argv[1]
+    path = sys.argv[1]
     with open(path, 'r') as f:
         textmap_string = f.read().strip()
-    # map = Textmap(textmap_string)
-    # print(map)
-    textmap_string = """
-namespace = "zdoom";
-    """
-    ast = parse_udmf(textmap_string)
-    print(ast)
+    textmap = parse_udmf(textmap_string)
+    print(textmap)
