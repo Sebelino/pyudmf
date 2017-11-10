@@ -2,6 +2,8 @@
 from abc import abstractmethod, ABCMeta
 
 import sys
+from copy import deepcopy
+
 from pyparsing import Word, alphas, alphanums, Literal, Combine, Optional, nums, QuotedString, ZeroOrMore, \
     Group
 
@@ -22,6 +24,10 @@ class Node(metaclass=ABCMeta):
     def group(cls, expr):
         raise NotImplementedError
 
+    @abstractmethod
+    def __deepcopy__(self, memodict={}):
+        raise NotImplementedError
+
 
 class TranslationUnit(Node):
     def __init__(self, *lst):
@@ -39,6 +45,9 @@ class TranslationUnit(Node):
 
     def __str__(self):
         return "\n\n".join(str(e) for e in self.global_expr_list)
+
+    def __deepcopy__(self, memo={}):
+        return TranslationUnit(*[deepcopy(child, memo) for child in self.global_expr_list])
 
 
 class Assignment(Node):
@@ -62,6 +71,9 @@ class Assignment(Node):
     def __str__(self):
         return "{} = {};".format(self.identifier, self.value)
 
+    def __deepcopy__(self, memo={}):
+        return Assignment(self.identifier, self.value)
+
 
 class Block(Node):
     def __init__(self, identifier: str, expressions: list):
@@ -84,6 +96,9 @@ class Block(Node):
     def __str__(self):
         expressions_str = "\n    ".join(str(e) for e in self.expressions)
         return "{} {{\n    {}\n}}".format(self.identifier, expressions_str)
+
+    def __deepcopy__(self, memo={}):
+        return Block(self.identifier, deepcopy(self.expressions, memo))
 
 
 def parse_udmf(textmap_string: str):
@@ -124,9 +139,29 @@ def parse_udmf(textmap_string: str):
     return ast
 
 
+def scale(ast, factor: float):
+    """ Recursively scales the x and y coordinates of every thing and vertex in the AST. """
+    if not isinstance(ast, Node) and not isinstance(ast, list):
+        return
+    if isinstance(ast, Assignment):
+        if ast.identifier in {'x', 'y'}:
+            ast.value = str(float(ast.value) * factor)
+        return
+    for child in ast:
+        scale(child, factor)
+
+
+def scaled(ast: Node, factor: float) -> Node:
+    scaled_ast = deepcopy(ast)
+    scale(scaled_ast, factor)
+    return scaled_ast
+
+
 if __name__ == '__main__':
     path = sys.argv[1]
+    scaling_factor = float(sys.argv[2])
     with open(path, 'r') as f:
         textmap_string = f.read().strip()
     textmap = parse_udmf(textmap_string)
+    scale(textmap, scaling_factor)
     print(textmap)

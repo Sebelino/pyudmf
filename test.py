@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import pytest
-from .udmfscale import parse_udmf, TranslationUnit, Assignment, Block
+
+from .udmfscale import parse_udmf, TranslationUnit, Assignment, Block, scaled
 
 
 @pytest.mark.parametrize("textmap, expected", [
@@ -55,4 +56,14 @@ lightlevel = 156;
 ])
 def test_parse_udmf(textmap, expected):
     returned = parse_udmf(textmap)
+    assert returned == expected
+
+
+@pytest.mark.parametrize("ast, expected", [
+    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', '7'), Assignment('y', '8')])),
+     TranslationUnit(Assignment('namespace', 'zdoom'),
+                     Block('thing', [Assignment('x', '3.5'), Assignment('y', '4.0')]))),
+])
+def test_scaled(ast, expected):
+    returned = scaled(ast, 0.5)
     assert returned == expected
