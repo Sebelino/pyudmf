@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import sys
 from copy import deepcopy
 
 from parser import Node, Assignment, parse_udmf
