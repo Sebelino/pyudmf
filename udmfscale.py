@@ -64,13 +64,14 @@ class Assignment(Node):
     @staticmethod
     def _cast_value(identifier, value):
         if identifier in {'x', 'y', 'v1', 'v2', 'id', 'angle', 'sector', 'type', 'sidefront', 'sideback', 'special',
-                          'offsetx', 'arg0', 'arg1', 'arg2', 'arg3', 'heightceiling', 'heightfloor', 'lightlevel'}:
+                          'offsetx', 'offsety', 'arg0', 'arg1', 'arg2', 'arg3', 'arg4', 'heightceiling', 'heightfloor',
+                          'lightlevel'}:
             value = float(value)
             if value == int(value):
                 value = int(value)
         elif identifier in {'ambush', 'coop', 'dm', 'single', 'skill1', 'skill2', 'skill3', 'skill4', 'skill5',
-                            'blocking', 'blocksound', 'dontpegtop', 'dontpegbottom', 'twosided', 'playercross',
-                            'playeruse', 'monsteruse', 'repeatspecial'}:
+                            'blocking', 'blocksound', 'dontpegtop', 'dontpegbottom', 'twosided', 'anycross',
+                            'playercross', 'playeruse', 'monsteruse', 'repeatspecial'}:
             if value == 'false':
                 value = False
             elif value == 'true':
@@ -122,8 +123,8 @@ class Block(Node):
         return Group(expr).setParseAction(group_action)
 
     def __str__(self):
-        expressions_str = "\n    ".join(str(e) for e in self.expressions)
-        return "{} {{\n    {}\n}}".format(self.identifier, expressions_str)
+        expressions_str = "\n".join(str(e) for e in self.expressions)
+        return "{}\n{{\n{}\n}}".format(self.identifier, expressions_str)
 
     def __deepcopy__(self, memo={}):
         return Block(self.identifier, deepcopy(self.expressions, memo))
