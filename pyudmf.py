@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import argparse
 import sys
 from copy import deepcopy
 
@@ -26,10 +26,15 @@ def scaled(ast: Node, factor: float) -> Node:
 
 
 if __name__ == '__main__':
-    path = sys.argv[1]
-    scaling_factor = float(sys.argv[2])
-    with open(path, 'r') as f:
+    parser = argparse.ArgumentParser(description="Scale an UDMF formatted Doom map.")
+    parser.add_argument('infile', help="Path to the TEXTMAP lump file.")
+    parser.add_argument('scalingfactor', type=float, help="Scaling factor. E.g. if the factor is 0.5, the map will"
+                                                          " shrink to 25 %% of its original area.")
+
+    args = parser.parse_args()
+
+    with open(args.infile, 'r') as f:
         textmap_string = f.read().strip()
     textmap = parse_udmf(textmap_string)
-    scale(textmap, scaling_factor)
+    scale(textmap, args.scalingfactor)
     print(textmap)
