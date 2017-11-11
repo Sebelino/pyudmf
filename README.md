@@ -17,3 +17,26 @@ positional arguments:
 optional arguments:
   -h, --help     show this help message and exit
 ```
+
+## Example
+```bash
+$ cat TEXTMAP.lmp
+namespace = "zdoom";
+thing { x = 608.000; y = 256.000; }
+vertex { x = 256.000; y = 192.000; }
+
+$ python pyudmf.py TEXTMAP.lmp 0.5
+namespace = "zdoom";
+
+thing
+{
+x = 304;
+y = 128;
+}
+
+vertex
+{
+x = 128;
+y = 96;
+}
+```
