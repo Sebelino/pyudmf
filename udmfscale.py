@@ -60,18 +60,34 @@ class Assignment(Node):
         children = [self.identifier, self.value]
         return children[i]
 
+    @staticmethod
+    def _cast_value(identifier, value):
+        if identifier in {'x', 'y', 'angle', 'sector', 'heightceiling', 'lightlevel'}:
+            value = float(value)
+            if value == int(value):
+                value = int(value)
+        elif identifier in {'ambush'}:
+            if value == 'false':
+                value = False
+            elif value == 'true':
+                value = True
+            else:
+                raise ValueError
+        return value
+
     @classmethod
     def group(cls, expr):
         def group_action(s, l, t):
             lst = t[0].asList()
             identifier, _, value, _ = lst
+            value = cls._cast_value(identifier, value)
             return cls(identifier, value)
 
         return Group(expr).setParseAction(group_action)
 
     def __str__(self):
-        if isinstance(self.value, str) or isinstance(self.value, int):
-            value_str = json.dumps(self.value)  # Enforce double quotes
+        if any(isinstance(self.value, tpe) for tpe in {str, int, float}):
+            value_str = json.dumps(self.value)  # Enforce double quotes for strings
         elif isinstance(self.value, bool):
             value_str = repr(self.value).lower()
         else:
@@ -152,7 +168,8 @@ def scale(ast, factor: float):
         return
     if isinstance(ast, Assignment):
         if ast.identifier in {'x', 'y'}:
-            ast.value = str(float(ast.value) * factor)
+            product = ast.value * factor
+            ast.value = int(product) if product == int(product) else product
         return
     for child in ast:
         scale(child, factor)

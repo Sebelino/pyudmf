@@ -10,7 +10,7 @@ from .udmfscale import parse_udmf, TranslationUnit, Assignment, Block, scaled
     ('namespace = "zdoom";', TranslationUnit(Assignment('namespace', 'zdoom'))),
     ('namespace = "zdoom"; thing {}', TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', []))),
     ('namespace = "zdoom"; thing { x = 7; }', TranslationUnit(Assignment('namespace', 'zdoom'),
-                                                              Block('thing', [Assignment('x', '7')]))),
+                                                              Block('thing', [Assignment('x', 7)]))),
     ("""
 thing
 {
@@ -22,10 +22,10 @@ ambush = true;
     """,
      TranslationUnit(
          Block("thing", [
-             Assignment('x', '608.000'),
-             Assignment('y', '256.000'),
-             Assignment('angle', '90'),
-             Assignment('ambush', 'true'),
+             Assignment('x', 608.000),
+             Assignment('y', 256.000),
+             Assignment('angle', 90),
+             Assignment('ambush', True),
          ])
      )),
     ("""
@@ -44,13 +44,13 @@ lightlevel = 156;
     """,
      TranslationUnit(
          Block("sidedef", [
-             Assignment("sector", "7"),
+             Assignment("sector", 7),
          ]),
          Block("sector", [
              Assignment("texturefloor", "FLOOR6_2"),
              Assignment("textureceiling", "CEIL3_5"),
-             Assignment("heightceiling", "128"),
-             Assignment("lightlevel", "156"),
+             Assignment("heightceiling", 128),
+             Assignment("lightlevel", 156),
          ])
      )),
 ])
@@ -70,9 +70,9 @@ def test_str(ast, expected):
 
 
 @pytest.mark.parametrize("ast, expected", [
-    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', '7'), Assignment('y', '8')])),
+    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', 7), Assignment('y', 8)])),
      TranslationUnit(Assignment('namespace', 'zdoom'),
-                     Block('thing', [Assignment('x', '3.5'), Assignment('y', '4.0')]))),
+                     Block('thing', [Assignment('x', 3.5), Assignment('y', 4)]))),
 ])
 def test_scaled(ast, expected):
     returned = scaled(ast, 0.5)
