@@ -60,6 +60,16 @@ def test_parse_udmf(textmap, expected):
 
 
 @pytest.mark.parametrize("ast, expected", [
+    (Assignment('x', 7), 'x = 7;'),
+    (Assignment('coop', True), 'coop = true;'),
+    (Assignment('coop', False), 'coop = false;'),
+    (Assignment('namespace', 'zdoom'), 'namespace = "zdoom";'),
+])
+def test_str(ast, expected):
+    assert str(ast) == expected
+
+
+@pytest.mark.parametrize("ast, expected", [
     (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', '7'), Assignment('y', '8')])),
      TranslationUnit(Assignment('namespace', 'zdoom'),
                      Block('thing', [Assignment('x', '3.5'), Assignment('y', '4.0')]))),

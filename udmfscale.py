@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 from abc import abstractmethod, ABCMeta
 
 import sys
@@ -69,7 +70,13 @@ class Assignment(Node):
         return Group(expr).setParseAction(group_action)
 
     def __str__(self):
-        return "{} = {};".format(self.identifier, self.value)
+        if isinstance(self.value, str) or isinstance(self.value, int):
+            value_str = json.dumps(self.value)  # Enforce double quotes
+        elif isinstance(self.value, bool):
+            value_str = repr(self.value).lower()
+        else:
+            raise ValueError
+        return "{} = {};".format(self.identifier, value_str)
 
     def __deepcopy__(self, memo={}):
         return Assignment(self.identifier, self.value)
