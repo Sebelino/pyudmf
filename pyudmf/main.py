@@ -2,7 +2,7 @@
 import argparse
 from copy import deepcopy
 
-from parser import Node, Assignment, parse_udmf
+from pyudmf.parser import Node, Assignment, parse_udmf
 
 
 def scale(ast, factor: float):

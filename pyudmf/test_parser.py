@@ -2,7 +2,8 @@
 
 import pytest
 
-from .udmfscale import parse_udmf, TranslationUnit, Assignment, Block, scaled
+from pyudmf.parser import parse_udmf, TranslationUnit, Assignment, Block
+from pyudmf.main import scaled
 
 
 @pytest.mark.parametrize("textmap, expected", [

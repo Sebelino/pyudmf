@@ -4,7 +4,7 @@ Command-line tool for resizing a Doom map formatted with the Universal Doom Map 
 
 # Usage
 ```bash
-$ python pyudmf.py -h
+$ python -m pyudmf.main -h
 usage: pyudmf.py [-h] infile scalingfactor
 
 Scale an UDMF formatted Doom map.
@@ -25,7 +25,7 @@ namespace = "zdoom";
 thing { x = 608.000; y = 256.000; }
 vertex { x = 256.000; y = 192.000; }
 
-$ python pyudmf.py TEXTMAP.lmp 0.5
+$ python -m pyudmf.main TEXTMAP.lmp 0.5
 namespace = "zdoom";
 
 thing
