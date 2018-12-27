@@ -3,8 +3,8 @@ from decimal import Decimal
 
 import pytest
 
+from pyudmf.ops.scaler import scaled
 from pyudmf.parser import parse_udmf, TranslationUnit, Assignment, Block
-from pyudmf.cli import scaled
 
 
 @pytest.mark.parametrize("textmap, expected", [
