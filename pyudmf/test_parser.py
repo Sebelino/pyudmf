@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from decimal import Decimal
 
 import pytest
 
@@ -10,8 +11,8 @@ from pyudmf.main import scaled
     ('', TranslationUnit()),
     ('namespace = "zdoom";', TranslationUnit(Assignment('namespace', 'zdoom'))),
     ('namespace = "zdoom"; thing {}', TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', []))),
-    ('namespace = "zdoom"; thing { x = 7; }', TranslationUnit(Assignment('namespace', 'zdoom'),
-                                                              Block('thing', [Assignment('x', 7)]))),
+    ('namespace = "zdoom"; thing { x = 7.000; }', TranslationUnit(Assignment('namespace', 'zdoom'),
+                                                                  Block('thing', [Assignment('x', Decimal('7.000'))]))),
     ('thing { type = 3001; }', TranslationUnit(Block('thing', [Assignment('type', 3001)]))),
     ('thing { angle = 90; }', TranslationUnit(Block('thing', [Assignment('angle', 90)]))),
     ('thing { ambush = true; }', TranslationUnit(Block('thing', [Assignment('ambush', True)]))),
@@ -53,10 +54,14 @@ from pyudmf.main import scaled
     ('sector { heightceiling = 128; }', TranslationUnit(Block('sector', [Assignment('heightceiling', 128)]))),
     ('sector { heightfloor = 8; }', TranslationUnit(Block('sector', [Assignment('heightfloor', 8)]))),
     ('sector { lightlevel = 156; }', TranslationUnit(Block('sector', [Assignment('lightlevel', 156)]))),
-    ('sector { xscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscalefloor', 3.0)]))),
-    ('sector { yscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscalefloor', 3.0)]))),
-    ('sector { xscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscaleceiling', 3.0)]))),
-    ('sector { yscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscaleceiling', 3.0)]))),
+    ('sector { xscalefloor = 3.000000; }',
+     TranslationUnit(Block('sector', [Assignment('xscalefloor', Decimal('3.000000'))]))),
+    ('sector { yscalefloor = 3.000000; }',
+     TranslationUnit(Block('sector', [Assignment('yscalefloor', Decimal('3.000000'))]))),
+    ('sector { xscaleceiling = 3.000000; }',
+     TranslationUnit(Block('sector', [Assignment('xscaleceiling', Decimal('3.000000'))]))),
+    ('sector { yscaleceiling = 3.000000; }',
+     TranslationUnit(Block('sector', [Assignment('yscaleceiling', Decimal('3.000000'))]))),
     ("""
 thing
 {
@@ -68,8 +73,8 @@ ambush = true;
     """,
      TranslationUnit(
          Block("thing", [
-             Assignment('x', 608.000),
-             Assignment('y', 256.000),
+             Assignment('x', Decimal('608.000')),
+             Assignment('y', Decimal('256.000')),
              Assignment('angle', 90),
              Assignment('ambush', True),
          ])
@@ -107,7 +112,7 @@ def test_parse_udmf(textmap, expected):
 
 @pytest.mark.parametrize("ast, expected", [
     (Assignment('v1', 7), 'v1 = 7;'),
-    (Assignment('x', 77.0), 'x = 77.0;'),
+    (Assignment('x', Decimal('77.000')), 'x = 77.000;'),
     (Assignment('coop', True), 'coop = true;'),
     (Assignment('coop', False), 'coop = false;'),
     (Assignment('namespace', 'zdoom'), 'namespace = "zdoom";'),
@@ -117,9 +122,10 @@ def test_str(ast, expected):
 
 
 @pytest.mark.parametrize("ast, expected", [
-    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', 7.0), Assignment('y', 8.0)])),
+    (TranslationUnit(Assignment('namespace', 'zdoom'),
+                     Block('thing', [Assignment('x', Decimal('7.000')), Assignment('y', Decimal('8.000'))])),
      TranslationUnit(Assignment('namespace', 'zdoom'),
-                     Block('thing', [Assignment('x', 3.5), Assignment('y', 4.0)]))),
+                     Block('thing', [Assignment('x', Decimal('3.500')), Assignment('y', Decimal('4.000'))]))),
     (TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 10)])),
      TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 5)]))),
 ])
@@ -131,6 +137,8 @@ def test_scaled(ast, expected):
 @pytest.mark.parametrize("textmap, expected", [
     ('v1 = 7;', 'v1 = 7;'),
     ('x = 77.0;', 'x = 77.0;'),
+    ('x = 77.000;', 'x = 77.000;'),
+    ('xscalefloor = 3.000000;', 'xscalefloor = 3.000000;'),
 ])
 def test_bijection(textmap, expected):
     assert str(parse_udmf(textmap)) == expected

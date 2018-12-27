@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 from copy import deepcopy
+from decimal import Decimal
 
 from pyudmf.parser import Node, Assignment, parse_udmf
 
@@ -10,12 +11,12 @@ def scale(ast, factor: float):
     if not isinstance(ast, Node) and not isinstance(ast, list):
         return
     if isinstance(ast, Assignment):
-        if ast.identifier in {'x', 'y', 'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
-            product = float(ast.value * factor)
-            ast.value = product
+        if ast.identifier in {'x', 'y'}:
+            ast.value = Decimal("{0:.3f}".format(float(ast.value) * factor))
+        if ast.identifier in {'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
+            ast.value = Decimal("{0:.6f}".format(float(ast.value) * factor))
         elif ast.identifier in {'offsetx', 'offsety'}:
-            product = int(ast.value * factor)
-            ast.value = product
+            ast.value = int(ast.value * factor)
         return
     for child in ast:
         scale(child, factor)

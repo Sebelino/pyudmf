@@ -4,6 +4,7 @@ from abc import abstractmethod, ABCMeta
 
 import sys
 from copy import deepcopy
+from decimal import Decimal
 
 from pyparsing import Word, alphas, alphanums, Literal, Combine, Optional, nums, QuotedString, ZeroOrMore, \
     Group
@@ -67,7 +68,7 @@ class Assignment(Node):
                           'offsetx', 'offsety', 'arg0', 'arg1', 'arg2', 'arg3', 'arg4', 'heightceiling', 'heightfloor',
                           'lightlevel', 'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
             if '.' in value:
-                value = float(value)
+                value = Decimal(value)
             else:
                 value = int(value)
         elif identifier in {'ambush', 'coop', 'dm', 'single', 'skill1', 'skill2', 'skill3', 'skill4', 'skill5',
@@ -92,10 +93,12 @@ class Assignment(Node):
         return Group(expr).setParseAction(group_action)
 
     def __str__(self):
-        if any(isinstance(self.value, tpe) for tpe in {str, int, float}):
+        if isinstance(self.value, str):
             value_str = json.dumps(self.value)  # Enforce double quotes for strings
         elif isinstance(self.value, bool):
             value_str = repr(self.value).lower()
+        elif any(isinstance(self.value, tpe) for tpe in {int, float, Decimal}):
+            value_str = str(self.value)
         else:
             raise ValueError
         return "{} = {};".format(self.identifier, value_str)
