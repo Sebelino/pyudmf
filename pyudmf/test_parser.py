@@ -4,7 +4,7 @@ from decimal import Decimal
 import pytest
 
 from pyudmf.parser import parse_udmf, TranslationUnit, Assignment, Block
-from pyudmf.main import scaled
+from pyudmf.cli import scaled
 
 
 @pytest.mark.parametrize("textmap, expected", [
