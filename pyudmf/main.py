@@ -10,9 +10,9 @@ def scale(ast, factor: float):
     if not isinstance(ast, Node) and not isinstance(ast, list):
         return
     if isinstance(ast, Assignment):
-        if ast.identifier in {'x', 'y'}:
+        if ast.identifier in {'x', 'y', 'offsetx', 'offsety', 'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
             product = ast.value * factor
-            ast.value = int(product) if product == int(product) else product
+            ast.value = product
         return
     for child in ast:
         scale(child, factor)

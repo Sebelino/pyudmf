@@ -66,8 +66,9 @@ class Assignment(Node):
         if identifier in {'x', 'y', 'v1', 'v2', 'id', 'angle', 'sector', 'type', 'sidefront', 'sideback', 'special',
                           'offsetx', 'offsety', 'arg0', 'arg1', 'arg2', 'arg3', 'arg4', 'heightceiling', 'heightfloor',
                           'lightlevel', 'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
-            value = float(value)
-            if value == int(value):
+            if '.' in value:
+                value = float(value)
+            else:
                 value = int(value)
         elif identifier in {'ambush', 'coop', 'dm', 'single', 'skill1', 'skill2', 'skill3', 'skill4', 'skill5',
                             'blocking', 'blocksound', 'dontpegtop', 'dontpegbottom', 'twosided', 'anycross',

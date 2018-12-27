@@ -53,10 +53,10 @@ from pyudmf.main import scaled
     ('sector { heightceiling = 128; }', TranslationUnit(Block('sector', [Assignment('heightceiling', 128)]))),
     ('sector { heightfloor = 8; }', TranslationUnit(Block('sector', [Assignment('heightfloor', 8)]))),
     ('sector { lightlevel = 156; }', TranslationUnit(Block('sector', [Assignment('lightlevel', 156)]))),
-    ('sector { xscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscalefloor', 3)]))),
-    ('sector { yscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscalefloor', 3)]))),
-    ('sector { xscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscaleceiling', 3)]))),
-    ('sector { yscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscaleceiling', 3)]))),
+    ('sector { xscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscalefloor', 3.0)]))),
+    ('sector { yscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscalefloor', 3.0)]))),
+    ('sector { xscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscaleceiling', 3.0)]))),
+    ('sector { yscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscaleceiling', 3.0)]))),
     ("""
 thing
 {
@@ -106,7 +106,8 @@ def test_parse_udmf(textmap, expected):
 
 
 @pytest.mark.parametrize("ast, expected", [
-    (Assignment('x', 7), 'x = 7;'),
+    (Assignment('v1', 7), 'v1 = 7;'),
+    (Assignment('x', 77.0), 'x = 77.0;'),
     (Assignment('coop', True), 'coop = true;'),
     (Assignment('coop', False), 'coop = false;'),
     (Assignment('namespace', 'zdoom'), 'namespace = "zdoom";'),
@@ -116,10 +117,18 @@ def test_str(ast, expected):
 
 
 @pytest.mark.parametrize("ast, expected", [
-    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', 7), Assignment('y', 8)])),
+    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', 7.0), Assignment('y', 8.0)])),
      TranslationUnit(Assignment('namespace', 'zdoom'),
-                     Block('thing', [Assignment('x', 3.5), Assignment('y', 4)]))),
+                     Block('thing', [Assignment('x', 3.5), Assignment('y', 4.0)]))),
 ])
 def test_scaled(ast, expected):
     returned = scaled(ast, 0.5)
     assert returned == expected
+
+
+@pytest.mark.parametrize("textmap, expected", [
+    ('v1 = 7;', 'v1 = 7;'),
+    ('x = 77.0;', 'x = 77.0;'),
+])
+def test_bijection(textmap, expected):
+    assert str(parse_udmf(textmap)) == expected
