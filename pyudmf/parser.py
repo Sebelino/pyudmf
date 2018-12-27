@@ -65,7 +65,7 @@ class Assignment(Node):
     def _cast_value(identifier, value):
         if identifier in {'x', 'y', 'v1', 'v2', 'id', 'angle', 'sector', 'type', 'sidefront', 'sideback', 'special',
                           'offsetx', 'offsety', 'arg0', 'arg1', 'arg2', 'arg3', 'arg4', 'heightceiling', 'heightfloor',
-                          'lightlevel'}:
+                          'lightlevel', 'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
             value = float(value)
             if value == int(value):
                 value = int(value)

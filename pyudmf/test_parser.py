@@ -53,6 +53,10 @@ from pyudmf.main import scaled
     ('sector { heightceiling = 128; }', TranslationUnit(Block('sector', [Assignment('heightceiling', 128)]))),
     ('sector { heightfloor = 8; }', TranslationUnit(Block('sector', [Assignment('heightfloor', 8)]))),
     ('sector { lightlevel = 156; }', TranslationUnit(Block('sector', [Assignment('lightlevel', 156)]))),
+    ('sector { xscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscalefloor', 3)]))),
+    ('sector { yscalefloor = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscalefloor', 3)]))),
+    ('sector { xscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('xscaleceiling', 3)]))),
+    ('sector { yscaleceiling = 3.0; }', TranslationUnit(Block('sector', [Assignment('yscaleceiling', 3)]))),
     ("""
 thing
 {
