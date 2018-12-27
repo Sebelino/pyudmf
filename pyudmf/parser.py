@@ -11,7 +11,7 @@ from pyparsing import Word, alphas, alphanums, Literal, Combine, Optional, nums,
 
 class Node(metaclass=ABCMeta):
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and all(a == b for a, b in zip(self, other))
+        return self.__class__ == other.__class__ and all(a.__class__ == b.__class__ and a == b for a, b in zip(self, other))
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, ', '.join(repr(c) for c in self))

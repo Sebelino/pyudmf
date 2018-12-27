@@ -120,6 +120,8 @@ def test_str(ast, expected):
     (TranslationUnit(Assignment('namespace', 'zdoom'), Block('thing', [Assignment('x', 7.0), Assignment('y', 8.0)])),
      TranslationUnit(Assignment('namespace', 'zdoom'),
                      Block('thing', [Assignment('x', 3.5), Assignment('y', 4.0)]))),
+    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 10)])),
+     TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 5)]))),
 ])
 def test_scaled(ast, expected):
     returned = scaled(ast, 0.5)
