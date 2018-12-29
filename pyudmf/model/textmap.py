@@ -113,19 +113,14 @@ class Textmap(object):
         self.things = tuple(things)  # Actually multiset
 
     def __eq__(self, other):
-        if not isinstance(other, Textmap):
-            return False
-        if self.vertices != other.vertices:
-            return False
-        if self.sidedefs != other.sidedefs:
-            return False
-        if self.linedefs != other.linedefs:
-            return False
-        if self.sectors != other.sectors:
-            return False
-        if self.things != other.things:
-            return False
-        return True
+        return all([
+            isinstance(other, Textmap),
+            self.vertices == other.vertices,
+            self.sidedefs == other.sidedefs,
+            self.linedefs == other.linedefs,
+            self.sectors == other.sectors,
+            self.things == other.things,
+        ])
 
     def __repr__(self):
         return "Textmap(vertices={}, sidedefs={}, linedefs={}, sectors={}, things={})".format(
