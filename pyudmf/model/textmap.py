@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from typing import AbstractSet, List
+
 
 class Vertex(object):
     def __init__(self, x: float, y: float):
@@ -17,11 +19,17 @@ class Vertex(object):
 
 
 class Sector(object):
-    def __init__(self, heightfloor: int, heightceiling: int, texturefloor: str, textureceiling: str):
+    def __init__(self, heightfloor: int, heightceiling: int, texturefloor: str, textureceiling: str,
+                 xscalefloor: float = 1.0, yscalefloor: float = 1.0, xscaleceiling: float = 1.0,
+                 yscaleceiling: float = 1.0):
         self.heightfloor = int(heightfloor)
         self.heightceiling = int(heightceiling)
         self.texturefloor = str(texturefloor)
         self.textureceiling = str(textureceiling)
+        self.xscalefloor = float(xscalefloor)
+        self.yscalefloor = float(yscalefloor)
+        self.xscaleceiling = float(xscaleceiling)
+        self.yscaleceiling = float(yscaleceiling)
 
     def __repr__(self):
         return "Sector({}, {}, {}, {})".format(self.heightfloor, self.heightceiling, repr(self.texturefloor),
@@ -31,13 +39,16 @@ class Sector(object):
         return hash(repr(self))
 
     def __eq__(self, other):
-        return isinstance(other, Sector) and self.heightceiling == other.heightceiling and self.texturefloor == other.texturefloor and self.textureceiling == other.textureceiling
+        return isinstance(other,
+                          Sector) and self.heightceiling == other.heightceiling and self.texturefloor == other.texturefloor and self.textureceiling == other.textureceiling
 
 
 class Sidedef(object):
-    def __init__(self, sector: Sector, texturemiddle: str):
+    def __init__(self, sector: Sector, texturemiddle: str, offsetx: int = 0, offsety: int = 0):
         self.sector = sector
         self.texturemiddle = texturemiddle
+        self.offsetx = offsetx
+        self.offsety = offsety
 
     def __repr__(self):
         return "Sidedef({}, {})".format(self.sector, repr(self.texturemiddle))
@@ -50,10 +61,11 @@ class Sidedef(object):
 
 
 class Linedef(object):
-    def __init__(self, v1: Vertex, v2: Vertex, sidefront: Sidedef):
+    def __init__(self, v1: Vertex, v2: Vertex, sidefront: Sidedef, blocking=False):
         self.v1 = v1
         self.v2 = v2
         self.sidefront = sidefront
+        self.blocking = blocking
 
     def __repr__(self):
         return "Linedef({}, {}, {})".format(self.v1, self.v2, self.sidefront)
@@ -62,7 +74,8 @@ class Linedef(object):
         return hash(repr(self))
 
     def __eq__(self, other):
-        return isinstance(other, Linedef) and self.v1 == other.v1 and self.v2 == other.v2 and self.sidefront == other.sidefront
+        return isinstance(other,
+                          Linedef) and self.v1 == other.v1 and self.v2 == other.v2 and self.sidefront == other.sidefront
 
 
 class Thing(object):
@@ -75,8 +88,7 @@ class Thing(object):
         return "Thing({}, {}, {})".format(self.type, self.x, self.y)
 
     def __eq__(self, other):
-        # Two Things can coexist even if all their properties are the same
-        return super().__eq__(other)
+        return isinstance(other, Thing) and self.x == other.x and self.y == other.y and self.type == other.type
 
 
 class Textmap(object):
@@ -84,8 +96,15 @@ class Textmap(object):
     The contents of a TEXTMAP lump.
     """
 
-    def __init__(self, namespace="zdoom", vertices=frozenset(), sidedefs=frozenset(), linedefs=frozenset(),
-                 sectors=frozenset(), things=()):
+    def __init__(
+            self,
+            namespace="zdoom",
+            vertices: AbstractSet[Vertex] = frozenset(),
+            sidedefs: AbstractSet[Sidedef] = frozenset(),
+            linedefs: AbstractSet[Linedef] = frozenset(),
+            sectors: AbstractSet[Sector] = frozenset(),
+            things: List[Thing] = tuple(),
+    ):
         self.namespace = namespace
         self.vertices = frozenset(vertices)
         self.sidedefs = frozenset(sidedefs)
@@ -94,7 +113,25 @@ class Textmap(object):
         self.things = tuple(things)  # Actually multiset
 
     def __eq__(self, other):
-        return isinstance(other, Textmap) and self.vertices == other.vertices
+        if not isinstance(other, Textmap):
+            return False
+        if self.vertices != other.vertices:
+            return False
+        if self.sidedefs != other.sidedefs:
+            return False
+        if self.linedefs != other.linedefs:
+            return False
+        if self.sectors != other.sectors:
+            return False
+        if self.things != other.things:
+            return False
+        return True
 
     def __repr__(self):
-        return "Textmap(vertices={})".format(self.vertices)
+        return "Textmap(vertices={}, sidedefs={}, linedefs={}, sectors={}, things={})".format(
+            self.vertices,
+            self.sidedefs,
+            self.linedefs,
+            self.sectors,
+            self.things,
+        )

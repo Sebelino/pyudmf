@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import argparse
 
-from pyudmf.ops.scaler import scale
+from pyudmf.model.factory import ast2textmap, textmap2ast
+from pyudmf.ops.scaler import scaled
 from pyudmf.parser import parse_udmf
 
 
@@ -15,6 +16,9 @@ if __name__ == '__main__':
 
     with open(args.infile, 'r') as f:
         textmap_string = f.read().strip()
-    textmap = parse_udmf(textmap_string)
-    scale(textmap, args.scalingfactor)
-    print(textmap)
+    ast = parse_udmf(textmap_string)
+    textmap = ast2textmap(ast)
+    scaled_textmap = scaled(textmap, args.scalingfactor)
+    scaled_ast = textmap2ast(scaled_textmap)
+
+    print(scaled_ast)

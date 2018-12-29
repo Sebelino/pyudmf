@@ -1,27 +1,34 @@
 #!/usr/bin/env python3
-from copy import deepcopy
-from decimal import Decimal
 
-from pyudmf.grammar.tu import Node, Assignment
+from pyudmf.model.textmap import Textmap, Thing, Sector, Sidedef, Vertex
 
 
-def scale(ast, factor: float):
-    """ Recursively scales the x and y coordinates of every thing and vertex in the AST. """
-    if not isinstance(ast, Node) and not isinstance(ast, list):
-        return
-    if isinstance(ast, Assignment):
-        if ast.identifier in {'x', 'y'}:
-            ast.value = Decimal("{0:.3f}".format(float(ast.value) * factor))
-        if ast.identifier in {'xscalefloor', 'yscalefloor', 'xscaleceiling', 'yscaleceiling'}:
-            ast.value = Decimal("{0:.6f}".format(float(ast.value) * factor))
-        elif ast.identifier in {'offsetx', 'offsety'}:
-            ast.value = int(ast.value * factor)
-        return
-    for child in ast:
-        scale(child, factor)
+def scaled(textmap: Textmap, factor: float) -> Textmap:
+    """ Scales the x and y coordinates of every thing and vertex in the textmap. """
 
+    sectors = {Sector(
+        s.heightfloor,
+        s.heightceiling,
+        s.texturefloor,
+        s.textureceiling,
+        xscalefloor=factor * s.xscalefloor,
+        yscalefloor=factor * s.yscalefloor,
+        xscaleceiling=factor * s.xscaleceiling,
+        yscaleceiling=factor * s.yscaleceiling,
+    ) for s in textmap.sectors}
+    sidedefs = {Sidedef(
+        sd.texturemiddle,
+        factor * sd.offsetx,
+        factor * sd.offsety
+    ) for sd in textmap.sidedefs}
+    vertices = {Vertex(factor * v.x, factor * v.y) for v in textmap.vertices}
+    linedefs = textmap.linedefs
+    things = [Thing(t.type, factor * t.x, factor * t.y) for t in textmap.things]
 
-def scaled(ast: Node, factor: float) -> Node:
-    scaled_ast = deepcopy(ast)
-    scale(scaled_ast, factor)
-    return scaled_ast
+    return Textmap(
+        vertices=vertices,
+        linedefs=linedefs,
+        sidedefs=sidedefs,
+        sectors=sectors,
+        things=things,
+    )

@@ -3,7 +3,6 @@ from decimal import Decimal
 
 import pytest
 
-from pyudmf.ops.scaler import scaled
 from pyudmf.parser import parse_udmf, TranslationUnit, Assignment, Block
 
 
@@ -121,24 +120,11 @@ def test_str(ast, expected):
     assert str(ast) == expected
 
 
-@pytest.mark.parametrize("ast, expected", [
-    (TranslationUnit(Assignment('namespace', 'zdoom'),
-                     Block('thing', [Assignment('x', Decimal('7.000')), Assignment('y', Decimal('8.000'))])),
-     TranslationUnit(Assignment('namespace', 'zdoom'),
-                     Block('thing', [Assignment('x', Decimal('3.500')), Assignment('y', Decimal('4.000'))]))),
-    (TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 10)])),
-     TranslationUnit(Assignment('namespace', 'zdoom'), Block('sidedef', [Assignment('offsetx', 5)]))),
+@pytest.mark.parametrize("textmap", [
+    'v1 = 7;',
+    'x = 77.0;',
+    'x = 77.000;',
+    'xscalefloor = 3.000000;',
 ])
-def test_scaled(ast, expected):
-    returned = scaled(ast, 0.5)
-    assert returned == expected
-
-
-@pytest.mark.parametrize("textmap, expected", [
-    ('v1 = 7;', 'v1 = 7;'),
-    ('x = 77.0;', 'x = 77.0;'),
-    ('x = 77.000;', 'x = 77.000;'),
-    ('xscalefloor = 3.000000;', 'xscalefloor = 3.000000;'),
-])
-def test_bijection(textmap, expected):
-    assert str(parse_udmf(textmap)) == expected
+def test_bijection(textmap):
+    assert str(parse_udmf(textmap)) == textmap
