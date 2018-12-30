@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 from decimal import Decimal
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from pyudmf.grammar.tu import TranslationUnit, Block, Assignment
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sidedef, Sector, Thing
+from pyudmf.model.visage import Visage
 
 
 def block2sector(block: Block):
@@ -74,7 +75,43 @@ def block2thing(block: Block):
     return Thing(props['type'], float(props['x']), float(props['y']))
 
 
-def ast2textmap(tu: TranslationUnit) -> Textmap:
+def ast2textmap(tu: TranslationUnit) -> (Textmap, Dict):
+    d = dict()
+    d['sectors'] = []
+    d['things'] = []
+    d['vertices'] = []
+    d['sidedefs'] = []
+    d['linedef'] = []
+
+    for i, global_expr in enumerate(tu):
+        if not isinstance(global_expr, Block):
+            continue
+        d[global_expr] = dict()
+        d[global_expr]['global_index'] = i
+        if global_expr.identifier == "sector":
+            d[global_expr]['model'] = block2sector(global_expr)
+            d['sectors'].append(d[global_expr]['model'])
+        elif global_expr.identifier == "thing":
+            d[global_expr]['model'] = block2thing(global_expr)
+            d['things'].append(d[global_expr]['model'])
+        elif global_expr.identifier == "vertex":
+            d[global_expr]['model'] = block2vertex(global_expr)
+            d['vertices'].append(d[global_expr]['model'])
+
+    for i, global_expr in enumerate(tu):
+        if not isinstance(global_expr, Block):
+            continue
+        if global_expr.identifier == "sidedef":
+            d[global_expr]['model'] = block2sidedef(global_expr, d['sectors'])
+            d['sidedefs'].append(d[global_expr]['model'])
+
+    for i, global_expr in enumerate(tu):
+        if not isinstance(global_expr, Block):
+            continue
+        if global_expr.identifier == "linedef":
+            d[global_expr]['model'] = block2linedef(global_expr, d['vertices'], d['sidedefs'])
+            d['linedef'].append(d[global_expr]['model'])
+
     sectors = [block2sector(e) for e in tu if e.identifier == "sector"]
     things = sorted(block2thing(e) for e in tu if e.identifier == "thing")
     vertices = [block2vertex(e) for e in tu if e.identifier == "vertex"]
@@ -83,7 +120,7 @@ def ast2textmap(tu: TranslationUnit) -> Textmap:
 
     linedefs = [block2linedef(e, vertices, sidedefs) for e in tu if e.identifier == "linedef"]
 
-    return Textmap(
+    textmap = Textmap(
         vertices=set(vertices),
         linedefs=set(linedefs),
         sidedefs=set(sidedefs),
@@ -91,15 +128,14 @@ def ast2textmap(tu: TranslationUnit) -> Textmap:
         things=things,
     )
 
+    visage = Visage(textmap, tu)
 
-# TODO use context
-def textmap2ast(textmap: Textmap, context=None) -> TranslationUnit:
-    if context is None:
-        context = dict(
-            vertex_ids={vertex: id for id, vertex in enumerate(textmap.vertices)},
-            sidefront_ids={sidefront: id for id, sidefront in enumerate(textmap.sidedefs)},
-            sector_ids={sector: id for id, sector in enumerate(textmap.sectors)},
-        )
+    return textmap, visage
+
+
+def textmap2ast(textmap: Textmap, visage: Optional[Visage] = None) -> TranslationUnit:
+    if visage is None:
+        visage = Visage(textmap)
 
     header = [
         Assignment("namespace", textmap.namespace),
@@ -117,7 +153,7 @@ def textmap2ast(textmap: Textmap, context=None) -> TranslationUnit:
     ]) for v in textmap.vertices]
 
     sidedefs = [Block("sidedef", [
-        Assignment("sector", context['sector_ids'][sd.sector]),
+        Assignment("sector", visage.sector_id(sd.sector)),
         Assignment("texturemiddle", sd.texturemiddle),
         Assignment("offsetx", sd.offsetx),
         Assignment("offsety", sd.offsety),
@@ -135,9 +171,9 @@ def textmap2ast(textmap: Textmap, context=None) -> TranslationUnit:
     ]) for s in textmap.sectors]
 
     linedefs = [Block("linedef", [
-        Assignment("v1", context['vertex_ids'][ld.v1]),
-        Assignment("v2", context['vertex_ids'][ld.v2]),
-        Assignment("sidefront", context['sidefront_ids'][ld.sidefront]),
+        Assignment("v1", visage.vertex_id(ld.v1)),
+        Assignment("v2", visage.vertex_id(ld.v2)),
+        Assignment("sidefront", visage.sidedef_id(ld.sidefront)),
         Assignment("blocking", ld.blocking),
     ]) for ld in textmap.linedefs]
 

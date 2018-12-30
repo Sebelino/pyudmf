@@ -7,11 +7,13 @@ import pytest
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
 from pyudmf.model.factory import ast2textmap, textmap2ast
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sector, Sidedef, Thing
+from pyudmf.model.visage import Visage
 
 
 @pytest.fixture
-def sample_ast():
+def sample_ast() -> TranslationUnit:
     return TranslationUnit(
+        Assignment("namespace", "zdoom"),
         Block("vertex", [
             Assignment("x", Decimal('0.000')),
             Assignment("y", Decimal('0.000')),
@@ -70,7 +72,7 @@ def sample_ast():
 
 
 @pytest.fixture
-def sample_textmap():
+def sample_textmap() -> Textmap:
     sectors = [
         Sector(0, 128, "CEIL3_3", "CEIL3_3"),
     ]
@@ -93,6 +95,7 @@ def sample_textmap():
         Thing(1, 32.0, 32.0),
     ]
     return Textmap(
+        namespace="zdoom",
         vertices=frozenset(vertices),
         sectors=frozenset(sectors),
         sidedefs=frozenset(sidedefs),
@@ -101,19 +104,24 @@ def sample_textmap():
     )
 
 
+@pytest.fixture
+def sample_visage(sample_textmap, sample_ast) -> Visage:
+    return Visage(sample_textmap, sample_ast)
+
+
 def test_ast2textmap(sample_ast, sample_textmap):
-    returned = ast2textmap(sample_ast)
+    returned, visage = ast2textmap(sample_ast)
 
     assert sample_textmap == returned
 
 
-@pytest.mark.skip()
-def test_textmap2ast(sample_textmap, sample_ast):
-    returned = textmap2ast(sample_textmap)
+@pytest.mark.skip
+def test_textmap2ast(sample_textmap, sample_ast, sample_visage):
+    returned = textmap2ast(sample_textmap, visage=sample_visage)
 
     assert sample_ast == returned
 
 
 def test_bijection(sample_textmap):
-    returned_textmap = ast2textmap(textmap2ast(sample_textmap))
+    returned_textmap, _ = ast2textmap(textmap2ast(sample_textmap))
     assert returned_textmap == sample_textmap

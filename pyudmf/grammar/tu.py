@@ -124,6 +124,9 @@ class Block(Node):
 
         return Group(expr).setParseAction(group_action)
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __str__(self):
         expressions_str = "\n".join(str(e) for e in self.expressions)
         return "{}\n{{\n{}\n}}".format(self.identifier, expressions_str)
