@@ -17,7 +17,7 @@ if __name__ == '__main__':
     with open(args.infile, 'r') as f:
         textmap_string = f.read().strip()
     ast = parse_udmf(textmap_string)
-    textmap = ast2textmap(ast)
+    textmap, visage = ast2textmap(ast)
     scaled_textmap = scaled(textmap, args.scalingfactor)
     scaled_ast = textmap2ast(scaled_textmap)
 

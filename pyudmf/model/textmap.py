@@ -87,6 +87,9 @@ class Thing(object):
     def __repr__(self):
         return "Thing({}, {}, {})".format(self.type, self.x, self.y)
 
+    def __hash__(self):
+        return hash(repr(self))
+
     def __eq__(self, other):
         return isinstance(other, Thing) and self.x == other.x and self.y == other.y and self.type == other.type
 
