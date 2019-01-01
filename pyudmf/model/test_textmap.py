@@ -5,15 +5,20 @@ from decimal import Decimal
 import pytest
 
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
-from pyudmf.model.factory import ast2textmap, textmap2ast
+from pyudmf.model.factory import ast2textmap
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sector, Sidedef, Thing
-from pyudmf.model.visage import Visage
+from pyudmf.model.visage import SladeVisage
 
 
 @pytest.fixture
 def sample_ast() -> TranslationUnit:
     return TranslationUnit(
         Assignment("namespace", "zdoom"),
+        Block("thing", [
+            Assignment("x", Decimal('32.000')),
+            Assignment("y", Decimal('32.000')),
+            Assignment("type", 1),
+        ]),
         Block("vertex", [
             Assignment("x", Decimal('0.000')),
             Assignment("y", Decimal('0.000')),
@@ -62,11 +67,6 @@ def sample_ast() -> TranslationUnit:
             Assignment("texturefloor", "CEIL3_3"),
             Assignment("textureceiling", "CEIL3_3"),
             Assignment("heightceiling", 128),
-        ]),
-        Block("thing", [
-            Assignment("x", Decimal('32.000')),
-            Assignment("y", Decimal('32.000')),
-            Assignment("type", 1),
         ]),
     )
 
@@ -124,60 +124,23 @@ def sample_textmap(vertices, sectors, sidedefs, linedefs, things) -> Textmap:
     )
 
 
-@pytest.fixture
-def sample_visage(sample_textmap, vertices, sectors, sidedefs, linedefs, things) -> Visage:
-    dct = {
-        'namespace': {'global_index': 0},
-        'vertices': {
-            vertices[0]: {'global_index': 1},
-            vertices[1]: {'global_index': 2},
-            vertices[2]: {'global_index': 3},
-            vertices[3]: {'global_index': 4},
-        },
-        'sectors': {
-            sectors[0]: {'global_index': 10},
-        },
-        'sidedefs': {
-            sidedefs[0]: {'global_index': 9},
-        },
-        'linedefs': {
-            linedefs[0]: {'global_index': 5},
-            linedefs[1]: {'global_index': 6},
-            linedefs[2]: {'global_index': 7},
-            linedefs[3]: {'global_index': 8},
-        },
-        'things': {
-            things[0]: {'global_index': 11},
-        },
-    }
-    return Visage(sample_textmap, dct)
-
-
 def test_ast2textmap(sample_ast, sample_textmap):
-    returned, visage = ast2textmap(sample_ast)
+    returned = ast2textmap(sample_ast)
 
     assert sample_textmap == returned
 
 
-def test_textmap2ast_full(sample_textmap, sample_ast, sample_visage):
-    returned = textmap2ast(sample_textmap, visage=sample_visage)
+def test_textmap2ast(sample_textmap, sample_ast):
+    visage = SladeVisage()
+    returned = visage.textmap2ast(sample_textmap)
 
     str(returned)
 
-    assert [type(e) for e in sample_ast] == [type(e) for e in returned]
-
-    a = [e.identifier for e in sample_ast if isinstance(e, Block)]
-    b = [e.identifier for e in returned if isinstance(e, Block)]
-    assert a == b
-
-
-@pytest.mark.skip
-def test_textmap2ast(sample_textmap, sample_ast, sample_visage):
-    returned = textmap2ast(sample_textmap, visage=sample_visage)
-
-    assert sample_ast == returned
+    assert len(sample_ast) == len(returned)
+    assert [x.identifier for x in sample_ast] == [x.identifier for x in returned]
 
 
 def test_bijection(sample_textmap):
-    returned_textmap, _ = ast2textmap(textmap2ast(sample_textmap))
+    visage = SladeVisage()
+    returned_textmap = ast2textmap(visage.textmap2ast(sample_textmap))
     assert returned_textmap == sample_textmap

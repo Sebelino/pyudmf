@@ -4,6 +4,7 @@ import json
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from decimal import Decimal
+from typing import List
 
 from pyparsing import Group
 
@@ -43,6 +44,9 @@ class TranslationUnit(Node):
             return cls(*lst)
 
         return Group(expr).setParseAction(group_action)
+
+    def __len__(self):
+        return len(self.global_expr_list)
 
     def __str__(self):
         return "\n\n".join(str(e) for e in self.global_expr_list)
@@ -90,6 +94,9 @@ class Assignment(Node):
 
         return Group(expr).setParseAction(group_action)
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __str__(self):
         if isinstance(self.value, str):
             value_str = json.dumps(self.value)  # Enforce double quotes for strings
@@ -106,7 +113,11 @@ class Assignment(Node):
 
 
 class Block(Node):
-    def __init__(self, identifier: str, expressions: list):
+    def __init__(self, identifier: str, expressions: List[Node]):
+        assert isinstance(identifier, str)
+        assert isinstance(expressions, list)
+        for e in expressions:
+            assert isinstance(e, Node)
         self.identifier = identifier
         self.expressions = expressions
 
