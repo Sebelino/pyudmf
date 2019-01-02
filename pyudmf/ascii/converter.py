@@ -1,23 +1,10 @@
 #!/usr/bin/env python
 
-import sys
 from typing import AbstractSet, Set, List
 
 from pyudmf.model.textmap import Vertex, Sidedef, Sector, Linedef, Textmap, Thing
 
 xscale = yscale = 64
-
-def __init__(self, asciimap):
-    """ @asciimap is a list of strings. """
-    self.xscale = self.yscale = 64
-    self.sectorcount = "".join(asciimap).count('.')
-    self.vertices = list(self._asciimap2vertices(asciimap))
-    self.vertices_dict = {e: i for i, e in enumerate(self.vertices)}  # For faster lookup
-    self.sidedefs = list(self._sidedefs())
-    self.sidedefs_dict = {e: i for i, e in enumerate(self.sidedefs)}  # For faster lookup
-    self.linedefs = self._linedefs()
-    self.sectors = self._asciimap2sectors(asciimap)
-    self.things = self._things()
 
 
 def _asciimap2vertices(asciimap) -> AbstractSet[Vertex]:
