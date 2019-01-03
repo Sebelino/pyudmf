@@ -33,14 +33,14 @@ class TestMonosector(object):
             ]),
             Block("vertex", [
                 Assignment("x", Decimal('0.000')),
-                Assignment("y", Decimal('128.000')),
+                Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('192.000')),
-                Assignment("y", Decimal('128.000')),
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('192.000')),
+                Assignment("x", Decimal('64.000')),
                 Assignment("y", Decimal('0.000')),
             ]),
             Block("linedef", [
@@ -94,9 +94,9 @@ class TestMonosector(object):
     def vertices(self):
         return [
             Vertex(0.0, 0.0),
-            Vertex(0.0, 128.0),
-            Vertex(192.0, 128.0),
-            Vertex(192.0, 0.0),
+            Vertex(0.0, 64.0),
+            Vertex(64.0, 64.0),
+            Vertex(64.0, 0.0),
         ]
 
     @pytest.fixture
