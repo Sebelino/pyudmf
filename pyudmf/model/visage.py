@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-import itertools
 from abc import abstractmethod, ABCMeta
-from collections import OrderedDict
 from decimal import Decimal
-from typing import Dict, Optional, Union
+from typing import Union
 
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
 from pyudmf.model.textmap import Textmap, Thing, Vertex, Sector, Sidedef, Linedef
@@ -39,14 +37,19 @@ class SladeVisage(Visage):
             ])) for i, s in enumerate(textmap.sectors)
         }
 
-        sidedefs = {
-            sd: (i, Block("sidedef", [
+        ld2sd = {
+            ld: (i, ld.sidefront) for i, ld in enumerate(textmap.linedefs)
+        }
+
+        sidedefs = [
+            (i, Block("sidedef", [
                 Assignment("sector", sectors[sd.sector][0]),
                 Assignment("texturemiddle", sd.texturemiddle),
                 Assignment("offsetx", sd.offsetx),
                 Assignment("offsety", sd.offsety),
-            ])) for i, sd in enumerate(textmap.sidedefs)
-        }
+            ])) for i, sd in ld2sd.values()
+        ]
+        sidedefs = [b for i, b in sorted(sidedefs, key=lambda k: k[0])]
 
         vertices = {
             v: (i, Block("vertex", [
@@ -55,15 +58,16 @@ class SladeVisage(Visage):
             ])) for i, v in enumerate(textmap.vertices)
         }
 
-        linedefs = {
-            ld: Block("linedef", [
+        linedefs = [
+            Block("linedef", [
                 Assignment("v1", vertices[ld.v1][0]),
                 Assignment("v2", vertices[ld.v2][0]),
-                Assignment("sidefront", sidedefs[ld.sidefront][0]),
+                Assignment("sidefront", ld2sd[ld][0]),
                 Assignment("blocking", ld.blocking),
             ]) for ld in textmap.linedefs
-        }
+        ]
 
+        # TODO multiplicity
         things = {
             t: Block("thing", [
                 Assignment("x", Decimal("{0:.3f}".format(t.x))),
@@ -72,7 +76,7 @@ class SladeVisage(Visage):
             ]) for t in textmap.things
         }
 
-        global_exprs = assignments + list(things.values()) + [b for _, b in vertices.values()] + list(linedefs.values()) + [b for _, b in sidedefs.values()] + [b for _, b in sectors.values()]
+        global_exprs = assignments + list(things.values()) + [b for _, b in vertices.values()] + linedefs + sidedefs + [b for _, b in sectors.values()]
 
         assert not any(e is None for e in global_exprs)
 

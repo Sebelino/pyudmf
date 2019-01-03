@@ -63,6 +63,18 @@ def sample_ast() -> TranslationUnit:
             Assignment("sector", 0),
             Assignment("texturemiddle", "MARBFACE"),
         ]),
+        Block("sidedef", [
+            Assignment("sector", 0),
+            Assignment("texturemiddle", "MARBFACE"),
+        ]),
+        Block("sidedef", [
+            Assignment("sector", 0),
+            Assignment("texturemiddle", "MARBFACE"),
+        ]),
+        Block("sidedef", [
+            Assignment("sector", 0),
+            Assignment("texturemiddle", "MARBFACE"),
+        ]),
         Block("sector", [
             Assignment("texturefloor", "CEIL3_3"),
             Assignment("textureceiling", "CEIL3_3"),

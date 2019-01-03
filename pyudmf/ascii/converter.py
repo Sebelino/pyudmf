@@ -61,30 +61,32 @@ def _spanning_vertices(vertices: Set[Vertex]) -> AbstractSet[Vertex]:
 
 def generate_linedefs(vertices: AbstractSet[Vertex], sidedefs: AbstractSet[Sidedef]) -> AbstractSet[Linedef]:
     linedefs = set()
-    #vertices = _spanning_vertices(vertices)
+    # vertices = _spanning_vertices(vertices)
 
     for vertex in sorted(vertices, key=lambda k: (k.y, k.x)):
         east = Vertex(vertex.x + xscale, vertex.y)
-        southeast = Vertex(vertex.x + xscale, vertex.y + yscale)
-        south = Vertex(vertex.x, vertex.y + yscale)
+        northeast = Vertex(vertex.x + xscale, vertex.y + yscale)
+        north = Vertex(vertex.x, vertex.y + yscale)
 
-        if east in vertices and not (east, vertex) in linedefs:
-            linedefs.add((vertex, east))
-        if east in vertices and southeast in vertices and not (southeast, east) in linedefs:
-            linedefs.add((east, southeast))
-        if south in vertices and southeast in vertices and not (south, southeast) in linedefs:
-            linedefs.add((southeast, south))
-        if south in vertices and not (vertex, south) in linedefs:
-            linedefs.add((south, vertex))
-    return {Linedef(v1, v2, list(sidedefs)[0]) for v1, v2 in linedefs}
+        if north in vertices and not (north, vertex) in linedefs:
+            linedefs.add((vertex, north))
+        if north in vertices and northeast in vertices and not (northeast, north) in linedefs:
+            linedefs.add((north, northeast))
+        if east in vertices and northeast in vertices and not (east, northeast) in linedefs:
+            linedefs.add((northeast, east))
+        if east in vertices and not (vertex, east) in linedefs:
+            linedefs.add((east, vertex))
+    return {Linedef(v1, v2, list(sidedefs)[0], blocking=True) for v1, v2 in linedefs}
 
 
 def asciimap2textmap(asciimap: List[str]) -> Textmap:
+    asciimap = [line.strip() for line in asciimap]
+    asciimap = [line for line in asciimap if line]
     vertices = _asciimap2vertices(asciimap)
     sectors = _asciimap2sectors(asciimap)
     sidedefs = _sectors2sidedefs(sectors)
     linedefs = generate_linedefs(vertices, sidedefs)
-    things = [Thing(1, 64, 64)]
+    things = [Thing(1, 0.5 * xscale, 0.5 * yscale)]
     textmap = Textmap(
         vertices=vertices,
         sectors=sectors,

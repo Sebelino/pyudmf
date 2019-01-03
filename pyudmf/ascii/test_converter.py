@@ -55,35 +55,35 @@ def sample_linedefs(sample_vertices, sample_sidedefs):
     vertices = sample_vertices
     sidedefs = sample_sidedefs
     return [
-        Linedef(vertices[0][0], vertices[0][1], sidedefs[0]),
-        Linedef(vertices[0][1], vertices[1][1], sidedefs[0]),
-        Linedef(vertices[1][1], vertices[1][0], sidedefs[0]),
-        Linedef(vertices[1][0], vertices[0][0], sidedefs[0]),
+        Linedef(vertices[0][0], vertices[1][0], sidedefs[0]),
+        Linedef(vertices[1][0], vertices[1][1], sidedefs[0]),
+        Linedef(vertices[1][1], vertices[0][1], sidedefs[0]),
+        Linedef(vertices[0][1], vertices[0][0], sidedefs[0]),
 
-        Linedef(vertices[0][1], vertices[0][2], sidedefs[0]),
-        Linedef(vertices[0][2], vertices[1][2], sidedefs[0]),
-        Linedef(vertices[1][2], vertices[1][1], sidedefs[0]),
+        Linedef(vertices[1][1], vertices[1][2], sidedefs[0]),
+        Linedef(vertices[1][2], vertices[0][2], sidedefs[0]),
+        Linedef(vertices[0][2], vertices[0][1], sidedefs[0]),
 
-        Linedef(vertices[0][2], vertices[0][3], sidedefs[0]),
-        Linedef(vertices[0][3], vertices[1][3], sidedefs[0]),
-        Linedef(vertices[1][3], vertices[1][2], sidedefs[0]),
+        Linedef(vertices[1][2], vertices[1][3], sidedefs[0]),
+        Linedef(vertices[1][3], vertices[0][3], sidedefs[0]),
+        Linedef(vertices[0][3], vertices[0][2], sidedefs[0]),
 
-        Linedef(vertices[1][1], vertices[2][1], sidedefs[0]),
-        Linedef(vertices[2][1], vertices[2][0], sidedefs[0]),
-        Linedef(vertices[2][0], vertices[1][0], sidedefs[0]),
+        Linedef(vertices[1][0], vertices[2][0], sidedefs[0]),
+        Linedef(vertices[2][0], vertices[2][1], sidedefs[0]),
+        Linedef(vertices[2][1], vertices[1][1], sidedefs[0]),
 
-        Linedef(vertices[1][2], vertices[2][2], sidedefs[0]),
-        Linedef(vertices[2][2], vertices[2][1], sidedefs[0]),
+        Linedef(vertices[2][1], vertices[2][2], sidedefs[0]),
+        Linedef(vertices[2][2], vertices[1][2], sidedefs[0]),
 
-        Linedef(vertices[1][3], vertices[2][3], sidedefs[0]),
-        Linedef(vertices[2][3], vertices[2][2], sidedefs[0]),
+        Linedef(vertices[2][2], vertices[2][3], sidedefs[0]),
+        Linedef(vertices[2][3], vertices[1][3], sidedefs[0]),
     ]
 
 
 @pytest.fixture()
 def sample_textmap(sample_vertices, sample_sectors, sample_sidedefs, sample_linedefs):
     things = [
-        Thing(1, 64, 64),
+        Thing(1, 32, 32),
     ]
     return Textmap(
         vertices=set(v for row in sample_vertices for v in row),
