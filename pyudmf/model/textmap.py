@@ -8,6 +8,18 @@ class Vertex(object):
         self.x = float(x)
         self.y = float(y)
 
+    def __add__(self, other: "Vertex"):
+        return Vertex(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: "Vertex"):
+        return Vertex(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, other: float):
+        return Vertex(other * self.x, other * self.y)
+
+    def __rmul__(self, other: float):
+        return self.__mul__(other)
+
     def __repr__(self):
         return "Vertex({}, {})".format(self.x, self.y)
 
