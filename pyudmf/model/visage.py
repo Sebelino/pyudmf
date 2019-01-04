@@ -81,17 +81,3 @@ class SladeVisage(Visage):
         assert not any(e is None for e in global_exprs)
 
         return TranslationUnit(*global_exprs)
-
-    def global_index(self, entity: Union[Vertex, Sector, Sidedef, Linedef, Thing]):
-        d = {
-            Vertex: self._vertices,
-            Sector: self._sectors,
-            Sidedef: self._sidedefs,
-            Linedef: self._linedefs,
-            Thing: self._things,
-        }
-        entities = d[type(entity)]
-        return entities[entity]['global_index']
-
-    def global_namespace_index(self) -> int:
-        return self._namespace['global_index']
