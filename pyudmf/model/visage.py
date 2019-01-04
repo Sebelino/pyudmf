@@ -18,7 +18,7 @@ class Visage(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class SladeVisage(Visage):
+class SebelinoVisage(Visage):
     def textmap2ast(self, textmap: Textmap) -> TranslationUnit:
         assignments = [
             Assignment("namespace", textmap.namespace),

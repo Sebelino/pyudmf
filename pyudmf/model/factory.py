@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 from pyudmf.grammar.tu import TranslationUnit, Block, Assignment
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sidedef, Sector, Thing
-from pyudmf.model.visage import Visage, SladeVisage
+from pyudmf.model.visage import Visage, SebelinoVisage
 
 
 def block2sector(block: Block):
@@ -123,5 +123,5 @@ def ast2textmap(tu: TranslationUnit) -> (Textmap, Dict):
 
 
 def textmap2ast(textmap: Textmap):
-    visage = SladeVisage()
+    visage = SebelinoVisage()
     return visage.textmap2ast(textmap)

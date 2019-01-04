@@ -7,7 +7,7 @@ import pytest
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
 from pyudmf.model.factory import ast2textmap
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sector, Sidedef, Thing
-from pyudmf.model.visage import SladeVisage
+from pyudmf.model.visage import SebelinoVisage
 
 
 @pytest.fixture
@@ -138,7 +138,7 @@ class TestMonosector(object):
 
     @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
-        visage = SladeVisage()
+        visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
 
         str(returned)
@@ -152,7 +152,7 @@ class TestMonosector(object):
         assert ast == returned
 
     def test_bijection(self, textmap):
-        visage = SladeVisage()
+        visage = SebelinoVisage()
         returned_textmap = ast2textmap(visage.textmap2ast(textmap))
         assert returned_textmap == textmap
 
@@ -317,7 +317,7 @@ class TestDuosector(object):
 
     @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
-        visage = SladeVisage()
+        visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
 
         str(returned)
@@ -326,6 +326,6 @@ class TestDuosector(object):
         assert [x.identifier for x in ast] == [x.identifier for x in returned]
 
     def test_bijection(self, textmap):
-        visage = SladeVisage()
+        visage = SebelinoVisage()
         returned_textmap = ast2textmap(visage.textmap2ast(textmap))
         assert returned_textmap == textmap
