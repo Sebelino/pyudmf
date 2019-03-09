@@ -19,6 +19,22 @@ class Visage(metaclass=ABCMeta):
 
 
 class SebelinoVisage(Visage):
+    """
+    Layout:
+
+    Assignments
+    Things
+    Vertices
+    Linedefs
+    Sidedefs
+    Sectors
+
+    Things are sorted primarily by y, secondarily by x, ascending order.
+    Vertices are sorted primarily by y, secondarily by x, ascending order.
+    Linedefs are sorted primarily by v1 index, secondarily by v2 index, ascending order.
+    Sidedefs are sorted by sector index, ascending order.
+    """
+
     def textmap2ast(self, textmap: Textmap) -> TranslationUnit:
         assignments = [
             Assignment("namespace", textmap.namespace),
