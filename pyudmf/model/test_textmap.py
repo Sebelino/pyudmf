@@ -32,6 +32,10 @@ class TestMonosector(object):
                 Assignment("y", Decimal('0.000')),
             ]),
             Block("vertex", [
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('0.000')),
+            ]),
+            Block("vertex", [
                 Assignment("x", Decimal('0.000')),
                 Assignment("y", Decimal('64.000')),
             ]),
@@ -39,19 +43,15 @@ class TestMonosector(object):
                 Assignment("x", Decimal('64.000')),
                 Assignment("y", Decimal('64.000')),
             ]),
-            Block("vertex", [
-                Assignment("x", Decimal('64.000')),
-                Assignment("y", Decimal('0.000')),
-            ]),
             Block("linedef", [
                 Assignment("v1", 0),
-                Assignment("v2", 1),
+                Assignment("v2", 2),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 1),
-                Assignment("v2", 2),
+                Assignment("v2", 0),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
@@ -63,7 +63,7 @@ class TestMonosector(object):
             ]),
             Block("linedef", [
                 Assignment("v1", 3),
-                Assignment("v2", 0),
+                Assignment("v2", 1),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
@@ -94,9 +94,9 @@ class TestMonosector(object):
     def vertices(self):
         return [
             Vertex(0.0, 0.0),
+            Vertex(64.0, 0.0),
             Vertex(0.0, 64.0),
             Vertex(64.0, 64.0),
-            Vertex(64.0, 0.0),
         ]
 
     @pytest.fixture
@@ -114,10 +114,10 @@ class TestMonosector(object):
     @pytest.fixture
     def linedefs(self, vertices, sidedefs):
         return [
-            Linedef(vertices[0], vertices[1], sidedefs[0], blocking=True),
-            Linedef(vertices[1], vertices[2], sidedefs[0], blocking=True),
+            Linedef(vertices[0], vertices[2], sidedefs[0], blocking=True),
+            Linedef(vertices[1], vertices[0], sidedefs[0], blocking=True),
             Linedef(vertices[2], vertices[3], sidedefs[0], blocking=True),
-            Linedef(vertices[3], vertices[0], sidedefs[0], blocking=True),
+            Linedef(vertices[3], vertices[1], sidedefs[0], blocking=True),
         ]
 
     @pytest.fixture
