@@ -147,7 +147,7 @@ class TestMonosector(object):
         assert [x.identifier for x in ast] == [x.identifier for x in returned]
         for i, p in enumerate(zip(ast.global_expr_list, returned.global_expr_list)):
             e, r = p
-            assert e == r, "Element {} differed".format(i)
+            assert e == r, "Element at index {} differed".format(i)
         assert ast.global_expr_list == returned.global_expr_list
         assert ast == returned
 
