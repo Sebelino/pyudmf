@@ -71,17 +71,18 @@ class SebelinoVisage(Visage):
             v: (i, Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
                 Assignment("y", Decimal("{0:.3f}".format(v.y))),
-            ])) for i, v in enumerate(textmap.vertices)
+            ])) for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))
         }
 
-        linedefs = [
-            Block("linedef", [
+        linedefs = {
+            (vertices[ld.v1][0], vertices[ld.v2][0], Block("linedef", [
                 Assignment("v1", vertices[ld.v1][0]),
                 Assignment("v2", vertices[ld.v2][0]),
-                Assignment("sidefront", ld2sd[ld][0]),
+                # Assignment("sidefront", ld2sd[ld][0]),
+                Assignment("sidefront", 0),
                 Assignment("blocking", ld.blocking),
-            ]) for ld in textmap.linedefs
-        ]
+            ])) for ld in textmap.linedefs
+        }
 
         # TODO multiplicity
         things = {
@@ -92,7 +93,13 @@ class SebelinoVisage(Visage):
             ]) for t in textmap.things
         }
 
-        global_exprs = assignments + list(things.values()) + [b for _, b in vertices.values()] + linedefs + sidedefs + [b for _, b in sectors.values()]
+        vertex_list = sorted(vertices.items(), key=lambda e: (e[0].y, e[0].x))
+        vertex_list = [b for _, (_, b) in vertex_list]
+
+        linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
+
+        global_exprs = assignments + list(things.values()) + vertex_list + linedef_list + sidedefs + [
+            b for _, b in sectors.values()]
 
         assert not any(e is None for e in global_exprs)
 

@@ -172,6 +172,14 @@ class TestDuosector(object):
                 Assignment("y", Decimal('0.000')),
             ]),
             Block("vertex", [
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('0.000')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('128.000')),
+                Assignment("y", Decimal('0.000')),
+            ]),
+            Block("vertex", [
                 Assignment("x", Decimal('0.000')),
                 Assignment("y", Decimal('64.000')),
             ]),
@@ -180,44 +188,36 @@ class TestDuosector(object):
                 Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('64.000')),
-                Assignment("y", Decimal('0.000')),
-            ]),
-            Block("vertex", [
                 Assignment("x", Decimal('128.000')),
                 Assignment("y", Decimal('64.000')),
             ]),
-            Block("vertex", [
-                Assignment("x", Decimal('128.000')),
-                Assignment("y", Decimal('0.000')),
-            ]),
             Block("linedef", [
                 Assignment("v1", 0),
-                Assignment("v2", 1),
-                Assignment("sidefront", 0),
-                Assignment("blocking", True),
-            ]),
-            Block("linedef", [
-                Assignment("v1", 1),
-                Assignment("v2", 2),
-                Assignment("sidefront", 0),
-                Assignment("blocking", True),
-            ]),
-            Block("linedef", [
-                Assignment("v1", 2),
                 Assignment("v2", 3),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
-                Assignment("v1", 3),
+                Assignment("v1", 1),
                 Assignment("v2", 0),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 2),
+                Assignment("v2", 1),
+                Assignment("sidefront", 0),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 3),
                 Assignment("v2", 4),
+                Assignment("sidefront", 0),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 4),
+                Assignment("v2", 1),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
@@ -229,7 +229,7 @@ class TestDuosector(object):
             ]),
             Block("linedef", [
                 Assignment("v1", 5),
-                Assignment("v2", 3),
+                Assignment("v2", 2),
                 Assignment("sidefront", 0),
                 Assignment("blocking", True),
             ]),
