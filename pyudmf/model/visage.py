@@ -57,13 +57,19 @@ class SebelinoVisage(Visage):
             ld: (i, ld.sidefront) for i, ld in enumerate(textmap.linedefs)
         }
 
-        sidedefs = [
-            (i, Block("sidedef", [
+        def sd2blocklist(sd: Sidedef):
+            blocklist = [
                 Assignment("sector", sectors[sd.sector][0]),
                 Assignment("texturemiddle", sd.texturemiddle),
-                Assignment("offsetx", sd.offsetx),
-                Assignment("offsety", sd.offsety),
-            ])) for i, sd in ld2sd.values()
+            ]
+            if sd.offsetx:
+                blocklist.append(Assignment("offsetx", sd.offsetx))
+            if sd.offsety:
+                blocklist.append(Assignment("offsety", sd.offsety))
+            return blocklist
+
+        sidedefs = [
+            (i, Block("sidedef", sd2blocklist(sd))) for i, sd in ld2sd.values()
         ]
         sidedefs = [b for i, b in sorted(sidedefs, key=lambda k: k[0])]
 
