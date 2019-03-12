@@ -84,9 +84,9 @@ class TestMonosector(object):
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sector", [
-                Assignment("texturefloor", "CEIL3_3"),
-                Assignment("textureceiling", "CEIL3_3"),
                 Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
             ]),
         )
 
@@ -136,7 +136,6 @@ class TestMonosector(object):
 
         assert textmap == returned
 
-    @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
@@ -262,14 +261,14 @@ class TestDuosector(object):
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sector", [
-                Assignment("texturefloor", "CEIL3_3"),
-                Assignment("textureceiling", "CEIL3_3"),
                 Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
             ]),
             Block("sector", [
-                Assignment("texturefloor", "CEIL3_3"),
-                Assignment("textureceiling", "CEIL3_3"),
                 Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
             ]),
         )
 

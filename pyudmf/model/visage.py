@@ -33,6 +33,7 @@ class SebelinoVisage(Visage):
     Vertices are sorted primarily by y, secondarily by x, ascending order.
     Linedefs are sorted primarily by v1 index, secondarily by v2 index, ascending order.
     Sidedefs are sorted by sector index, ascending order.
+    Assignments within Sectors are sorted alphabetically, ascending order.
     """
 
     def textmap2ast(self, textmap: Textmap) -> TranslationUnit:
@@ -40,17 +41,26 @@ class SebelinoVisage(Visage):
             Assignment("namespace", textmap.namespace),
         ]
 
-        sectors = {
-            s: (i, Block("sector", [
-                Assignment("heightfloor", s.heightfloor),
+        def s2blocklist(s: Sector):
+            blocklist = [
                 Assignment("heightceiling", s.heightceiling),
-                Assignment("xscalefloor", Decimal("{0:.6f}".format(s.xscalefloor))),
-                Assignment("yscalefloor", Decimal("{0:.6f}".format(s.yscalefloor))),
-                Assignment("xscaleceiling", Decimal("{0:.6f}".format(s.xscaleceiling))),
-                Assignment("yscaleceiling", Decimal("{0:.6f}".format(s.yscaleceiling))),
                 Assignment("texturefloor", s.texturefloor),
                 Assignment("textureceiling", s.textureceiling),
-            ])) for i, s in enumerate(textmap.sectors)
+            ]
+            if s.heightfloor:
+                blocklist.append(Assignment("heightfloor", s.heightfloor))
+            if s.xscalefloor != 1.0:
+                blocklist.append(Assignment("xscalefloor", Decimal("{0:.6f}".format(s.xscalefloor))))
+            if s.yscalefloor != 1.0:
+                blocklist.append(Assignment("yscalefloor", Decimal("{0:.6f}".format(s.yscalefloor))))
+            if s.xscaleceiling != 1.0:
+                blocklist.append(Assignment("xscaleceiling", Decimal("{0:.6f}".format(s.xscaleceiling))))
+            if s.yscaleceiling != 1.0:
+                blocklist.append(Assignment("yscaleceiling", Decimal("{0:.6f}".format(s.yscaleceiling))))
+            return list(sorted(blocklist, key=lambda a: a.identifier))
+
+        sectors = {
+            s: (i, Block("sector", s2blocklist(s))) for i, s in enumerate(textmap.sectors)
         }
 
         ld2sd = {
