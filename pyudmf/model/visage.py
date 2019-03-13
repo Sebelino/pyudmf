@@ -114,8 +114,9 @@ class SebelinoVisage(Visage):
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
 
-        global_exprs = assignments + list(things.values()) + vertex_list + linedef_list + sidedefs + [
-            b for _, b in sectors.values()]
+        sector_list = [b for _, b in sectors.values()]
+
+        global_exprs = assignments + list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
 
         assert not any(e is None for e in global_exprs)
 
