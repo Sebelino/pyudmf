@@ -128,6 +128,44 @@ class Textmap(object):
         self.sectors = frozenset(sectors)
         self.things = tuple(things)  # Actually multiset
 
+    @classmethod
+    def _cycles(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
+        """
+        :return: Any cycle that encloses one sector, or None if no such cycle exists.
+        """
+        next_linedef_sets = []
+        next_cycles = []
+        for i, linedefs in enumerate(linedef_sets):
+            if not linedefs:
+                return None
+            cycle = cycles[i]
+            if not cycle:
+                neighbor_linedefs = [next(iter(linedefs))]
+            else:
+                linedef = cycle[:-1]
+                neighbor_linedefs = [ld for ld in linedefs if linedef.v2 in {ld.v1, ld.v2}]
+            if not neighbor_linedefs:
+                continue
+            for neighbor in neighbor_linedefs:
+                next_linedef_set = linedefs.difference(neighbor)
+                next_linedef_sets.append(next_linedef_set)
+                next_cycles.append(neighbor)
+        for cycle in next_cycles:
+            if len(cycle) >= 2 and cycle[:-1].v2 == cycle[0].v1:
+                return cycle
+        return cls._cycles(next_linedef_sets, next_cycles)
+
+    def cycles(self) -> AbstractSet[List[Linedef]]:
+        """
+        :return: A set of sequences of linedefs such that each sequence of linedefs encloses a sector.
+        """
+        cycles = set()
+        linedefs = set(self.linedefs)
+        while linedefs:
+            linedef = linedefs.pop()
+            self._cycles([linedefs], [[]])
+        return cycles
+
     def __eq__(self, other):
         return all([
             isinstance(other, Textmap),

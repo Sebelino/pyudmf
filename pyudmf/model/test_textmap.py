@@ -155,6 +155,10 @@ class TestMonosector(object):
         returned_textmap = ast2textmap(visage.textmap2ast(textmap))
         assert returned_textmap == textmap
 
+    def test_cycle(self, textmap, linedefs):
+        cycles = textmap.cycles()
+        assert cycles == {tuple(linedefs)}
+
 
 class TestDuosector(object):
     @pytest.fixture
