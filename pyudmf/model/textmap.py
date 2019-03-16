@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-from typing import AbstractSet, List
+from typing import AbstractSet, List, Set, Tuple
+
+from pyudmf.model.cycle import Cycle
 
 
 class Vertex(object):
@@ -129,7 +131,7 @@ class Textmap(object):
         self.things = tuple(things)  # Actually multiset
 
     @classmethod
-    def _cycles(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
+    def _find_cycles(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
         """
         :return: Any cycle that encloses one sector, or None if no such cycle exists.
         """
@@ -142,29 +144,32 @@ class Textmap(object):
             if not cycle:
                 neighbor_linedefs = [next(iter(linedefs))]
             else:
-                linedef = cycle[:-1]
+                linedef = cycle[-1]
                 neighbor_linedefs = [ld for ld in linedefs if linedef.v2 in {ld.v1, ld.v2}]
             if not neighbor_linedefs:
                 continue
             for neighbor in neighbor_linedefs:
-                next_linedef_set = linedefs.difference(neighbor)
+                next_linedef_set = linedefs.difference({neighbor})
                 next_linedef_sets.append(next_linedef_set)
-                next_cycles.append(neighbor)
+                next_cycle = cycle + [neighbor]
+                next_cycles.append(next_cycle)
         for cycle in next_cycles:
-            if len(cycle) >= 2 and cycle[:-1].v2 == cycle[0].v1:
-                return cycle
-        return cls._cycles(next_linedef_sets, next_cycles)
+            if len(cycle) >= 2 and cycle[-1].v2 == cycle[0].v1:
+                return tuple(cycle)
+        return cls._find_cycles(next_linedef_sets, next_cycles)
 
-    def cycles(self) -> AbstractSet[List[Linedef]]:
+    def cycles(self) -> AbstractSet[Cycle]:
         """
         :return: A set of sequences of linedefs such that each sequence of linedefs encloses a sector.
         """
         cycles = set()
         linedefs = set(self.linedefs)
         while linedefs:
-            linedef = linedefs.pop()
-            self._cycles([linedefs], [[]])
-        return cycles
+            cycle = self._find_cycles([linedefs], [[]])
+            if cycle:
+                cycles.add(cycle)
+                linedefs = linedefs.difference(set(cycle))
+        return frozenset([Cycle(c) for c in cycles])
 
     def __eq__(self, other):
         return all([
