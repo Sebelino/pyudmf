@@ -5,6 +5,7 @@ from decimal import Decimal
 import pytest
 
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
+from pyudmf.model.cycle import Cycle
 from pyudmf.model.factory import ast2textmap
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sector, Sidedef, Thing
 from pyudmf.model.visage import SebelinoVisage
@@ -157,7 +158,10 @@ class TestMonosector(object):
 
     def test_cycle(self, textmap, linedefs):
         cycles = textmap.cycles()
-        assert cycles == {tuple(linedefs)}
+        expected = {
+            Cycle([linedefs[0], linedefs[2], linedefs[3], linedefs[1]]),
+        }
+        assert cycles == expected
 
 
 class TestDuosector(object):
