@@ -317,6 +317,15 @@ class TestDuosector(object):
             things=things
         )
 
+    @pytest.mark.skip
+    def test_cycle(self, textmap, linedefs):
+        cycles = textmap.cycles()
+        expected = {
+            Cycle([linedefs[0], linedefs[1], linedefs[2], linedefs[3]]),
+            Cycle([linedefs[4], linedefs[5], linedefs[6], linedefs[2]]),
+        }
+        assert cycles == expected
+
     def test_ast2textmap(self, ast, textmap):
         returned = ast2textmap(ast)
 

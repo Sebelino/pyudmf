@@ -158,6 +158,15 @@ class Textmap(object):
                 return tuple(cycle)
         return cls._find_cycles(next_linedef_sets, next_cycles)
 
+    @classmethod
+    def degree(cls, vertex: Vertex, linedefs: AbstractSet[Linedef]):
+        """
+        :return: The indegree + outdegree of a vertex in the graph
+        """
+        out_vertices = {ld for ld in linedefs if ld.v1 == vertex}
+        in_vertices = {ld for ld in linedefs if ld.v2 == vertex}
+        return len(out_vertices) + len(in_vertices)
+
     def cycles(self) -> AbstractSet[Cycle]:
         """
         :return: A set of sequences of linedefs such that each sequence of linedefs encloses a sector.
@@ -165,10 +174,14 @@ class Textmap(object):
         cycles = set()
         linedefs = set(self.linedefs)
         while linedefs:
+            linedefs = {ld for ld in linedefs if
+                        self.degree(ld.v1, linedefs) >= 2 and self.degree(ld.v2, linedefs) >= 2}
             cycle = self._find_cycles([linedefs], [[]])
             if cycle:
                 cycles.add(cycle)
-                linedefs = linedefs.difference(set(cycle))
+                cycle_subset = {ld for ld in cycle if
+                                self.degree(ld.v1, linedefs) == 2 and self.degree(ld.v2, linedefs) == 2}
+                linedefs = linedefs.difference(cycle_subset)
         return frozenset([Cycle(c) for c in cycles])
 
     def __eq__(self, other):

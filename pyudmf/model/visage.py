@@ -2,7 +2,6 @@
 
 from abc import abstractmethod, ABCMeta
 from decimal import Decimal
-from typing import Union
 
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
 from pyudmf.model.textmap import Textmap, Thing, Vertex, Sector, Sidedef, Linedef
