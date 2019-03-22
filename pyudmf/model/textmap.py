@@ -131,7 +131,7 @@ class Textmap(object):
         self.things = tuple(things)  # Actually multiset
 
     @classmethod
-    def _find_cycles(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
+    def _find_cycle(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
         """
         :return: Any cycle that encloses one sector, or None if no such cycle exists.
         """
@@ -156,7 +156,7 @@ class Textmap(object):
         for cycle in next_cycles:
             if len(cycle) >= 2 and cycle[-1].v2 == cycle[0].v1:
                 return tuple(cycle)
-        return cls._find_cycles(next_linedef_sets, next_cycles)
+        return cls._find_cycle(next_linedef_sets, next_cycles)
 
     @classmethod
     def degree(cls, vertex: Vertex, linedefs: AbstractSet[Linedef]):
@@ -176,7 +176,7 @@ class Textmap(object):
         while linedefs:
             linedefs = {ld for ld in linedefs if
                         self.degree(ld.v1, linedefs) >= 2 and self.degree(ld.v2, linedefs) >= 2}
-            cycle = self._find_cycles([linedefs], [[]])
+            cycle = self._find_cycle([linedefs], [[]])
             if cycle:
                 cycles.add(cycle)
                 cycle_subset = {ld for ld in cycle if
