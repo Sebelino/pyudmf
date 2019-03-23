@@ -154,7 +154,7 @@ class Textmap(object):
                 next_cycle = cycle + [neighbor]
                 next_cycles.append(next_cycle)
         for cycle in next_cycles:
-            if len(cycle) >= 2 and cycle[-1].v2 == cycle[0].v1:
+            if len(cycle) >= 2 and cycle[0].v1 in {cycle[-1].v1, cycle[-1].v2}:
                 return tuple(cycle)
         return cls._find_cycle(next_linedef_sets, next_cycles)
 
