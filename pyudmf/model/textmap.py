@@ -131,7 +131,7 @@ class Textmap(object):
         self.things = tuple(things)  # Actually multiset
 
     @classmethod
-    def _find_cycle(cls, linedef_sets: [AbstractSet[Linedef]], cycles: List[List[Linedef]]):
+    def _find_cycle(cls, linedef_sets: List[Set[Linedef]], cycles: List[List[Linedef]]):
         """
         :return: Any cycle that encloses one sector, or None if no such cycle exists.
         """
