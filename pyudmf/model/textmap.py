@@ -146,6 +146,8 @@ class Textmap(object):
             else:
                 linedef = cycle[-1]
                 neighbor_linedefs = [ld for ld in linedefs if {linedef.v1, linedef.v2}.intersection({ld.v1, ld.v2})]
+                neighbor_linedefs = [ld for ld in neighbor_linedefs if cls.degree(ld.v1, frozenset(cycle)) <= 1]
+                neighbor_linedefs = [ld for ld in neighbor_linedefs if cls.degree(ld.v2, frozenset(cycle)) <= 1]
             if not neighbor_linedefs:
                 continue
             for neighbor in neighbor_linedefs:
