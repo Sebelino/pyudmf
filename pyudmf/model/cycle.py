@@ -24,6 +24,9 @@ class Cycle(object):
     def __next__(self):
         return next(self._cycle)
 
+    def __reversed__(self):
+        return Cycle(tuple(reversed(self._tuple)))
+
     def __len__(self):
         return self._length
 

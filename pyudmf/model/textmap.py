@@ -169,6 +169,27 @@ class Textmap(object):
         in_vertices = {ld for ld in linedefs if ld.v2 == vertex}
         return len(out_vertices) + len(in_vertices)
 
+    @staticmethod
+    def determinant(ax, ay, bx, by, cx, cy):
+        return bx * cy - by * cx - ax * cy + ax * by + ay * cx - ay * bx
+
+    @classmethod
+    def negatively_orient(cls, cycle):
+        ld1 = next(cycle)
+        ld2 = next(cycle)
+        vertices_ld1 = {ld1.v1, ld1.v2}
+        vertices_ld2 = {ld2.v1, ld2.v2}
+        b = next(iter(vertices_ld1.intersection(vertices_ld2)))
+        a = next(iter(vertices_ld1.difference({b})))
+        c = next(iter(vertices_ld2.difference({b})))
+        det = cls.determinant(a.x, a.y, b.x, b.y, c.x, c.y)
+        if det < 0:
+            return cycle
+        elif det > 0:
+            return reversed(cycle)
+        else:
+            raise NotImplementedError("Zero determinant -- all three vertices are colinear")
+
     def cycles(self) -> AbstractSet[Cycle]:
         """
         :return: A set of sequences of linedefs such that each sequence of linedefs encloses a sector.
@@ -184,7 +205,9 @@ class Textmap(object):
                 cycle_subset = {ld for ld in cycle if
                                 self.degree(ld.v1, linedefs) == 2 and self.degree(ld.v2, linedefs) == 2}
                 linedefs = linedefs.difference(cycle_subset)
-        return frozenset([Cycle(c) for c in cycles])
+        cycles = frozenset([Cycle(c) for c in cycles])
+        cycles = frozenset([self.negatively_orient(c) for c in cycles])
+        return cycles
 
     def __eq__(self, other):
         return all([

@@ -317,7 +317,6 @@ class TestDuosector(object):
             things=things
         )
 
-    @pytest.mark.skip
     def test_cycle(self, textmap, linedefs):
         cycles = textmap.cycles()
         expected = {
