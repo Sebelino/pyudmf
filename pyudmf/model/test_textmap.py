@@ -335,8 +335,6 @@ class TestDuosector(object):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
 
-        str(returned)
-
         assert len(ast) == len(returned)
         assert [x.identifier for x in ast] == [x.identifier for x in returned]
 
