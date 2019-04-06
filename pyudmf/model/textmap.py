@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import AbstractSet, List, Set, Tuple
+from typing import AbstractSet, List, Set, Tuple, Optional
 
 from pyudmf.model.cycle import Cycle
 
@@ -75,15 +75,32 @@ class Sidedef(object):
 
 
 class Linedef(object):
-    def __init__(self, v1: Vertex, v2: Vertex, sidefront: Sidedef, blocking=False):
+    def __init__(
+            self,
+            v1: Vertex,
+            v2: Vertex,
+            sidefront: Optional[Sidedef] = None,
+            sideback: Optional[Sidedef] = None,
+            blocking: bool = False
+    ):
         assert v1 != v2
         self.v1 = v1
         self.v2 = v2
+        if sidefront is not None:
+            assert isinstance(sidefront, Sidedef)
         self.sidefront = sidefront
+        if sideback is not None:
+            assert isinstance(sideback, Sidedef)
+        self.sideback = sideback
         self.blocking = blocking
 
     def __repr__(self):
-        return "Linedef({}, {}, {})".format(self.v1, self.v2, self.sidefront)
+        args = [self.v1, self.v2]
+        if self.sidefront:
+            args.append(self.sidefront)
+        if self.sideback:
+            args.append(self.sideback)
+        return "Linedef({})".format(", ".join(str(a) for a in args))
 
     def __hash__(self):
         return hash(repr(self))

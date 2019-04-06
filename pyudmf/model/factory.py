@@ -46,7 +46,7 @@ def block2linedef(block: Block, vertices: List[Vertex], sidedefs: List[Sidedef])
     v1 = vertices[props['v1']]
     v2 = vertices[props['v2']]
     sidefront = sidedefs[props['sidefront']]
-    return Linedef(v1, v2, sidefront, props['blocking'])
+    return Linedef(v1, v2, sidefront=sidefront, blocking=props['blocking'])
 
 
 def block2sidedef(block: Block, sectors: List[Sector]):
