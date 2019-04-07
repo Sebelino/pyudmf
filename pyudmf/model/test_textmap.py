@@ -53,19 +53,19 @@ class TestMonosector(object):
             Block("linedef", [
                 Assignment("v1", 1),
                 Assignment("v2", 0),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 1),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 2),
                 Assignment("v2", 3),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 2),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 3),
                 Assignment("v2", 1),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 3),
                 Assignment("blocking", True),
             ]),
             Block("sidedef", [
@@ -137,6 +137,7 @@ class TestMonosector(object):
 
         assert textmap == returned
 
+    @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
@@ -207,37 +208,38 @@ class TestDuosector(object):
             Block("linedef", [
                 Assignment("v1", 1),
                 Assignment("v2", 0),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 1),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 2),
                 Assignment("v2", 1),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 4),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 3),
                 Assignment("v2", 4),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 2),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 4),
                 Assignment("v2", 1),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 3),
+                Assignment("sideback", 5),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 4),
                 Assignment("v2", 5),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 6),
                 Assignment("blocking", True),
             ]),
             Block("linedef", [
                 Assignment("v1", 5),
                 Assignment("v2", 2),
-                Assignment("sidefront", 0),
+                Assignment("sidefront", 7),
                 Assignment("blocking", True),
             ]),
             Block("sidedef", [
@@ -254,6 +256,10 @@ class TestDuosector(object):
             ]),
             Block("sidedef", [
                 Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 1),
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sidedef", [
