@@ -341,8 +341,12 @@ class TestDuosector(object):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
 
-        assert len(ast) == len(returned)
-        assert [x.identifier for x in ast] == [x.identifier for x in returned]
+        assert [x for x in ast if x.identifier == "thing"] == [x for x in returned if x.identifier == "thing"]
+        assert [x for x in ast if x.identifier == "vertex"] == [x for x in returned if x.identifier == "vertex"]
+        assert [x for x in ast if x.identifier == "linedef"] == [x for x in returned if x.identifier == "linedef"]
+        assert [x for x in ast if x.identifier == "sidedef"] == [x for x in returned if x.identifier == "sidedef"]
+        assert [x for x in ast if x.identifier == "sector"] == [x for x in returned if x.identifier == "sector"]
+        assert ast == returned
 
     def test_bijection(self, textmap):
         visage = SebelinoVisage()
