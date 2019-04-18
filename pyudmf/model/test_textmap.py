@@ -251,15 +251,15 @@ class TestDuosector(object):
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sidedef", [
-                Assignment("sector", 0),
-                Assignment("texturemiddle", "MARBFACE"),
-            ]),
-            Block("sidedef", [
-                Assignment("sector", 0),
-                Assignment("texturemiddle", "MARBFACE"),
-            ]),
-            Block("sidedef", [
                 Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 0),
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sidedef", [
