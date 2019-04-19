@@ -137,7 +137,6 @@ class TestMonosector(object):
 
         assert textmap == returned
 
-    @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
@@ -336,7 +335,6 @@ class TestDuosector(object):
 
         assert textmap == returned
 
-    @pytest.mark.skip
     def test_textmap2ast(self, textmap, ast):
         visage = SebelinoVisage()
         returned = visage.textmap2ast(textmap)
