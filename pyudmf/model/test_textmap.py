@@ -350,3 +350,59 @@ class TestDuosector(object):
         visage = SebelinoVisage()
         returned_textmap = ast2textmap(visage.textmap2ast(textmap))
         assert returned_textmap == textmap
+
+
+class TestTwoByTwoSector(object):
+    @pytest.fixture
+    def sectors(self):
+        return [
+            Sector(0, 128, 'MFLR8_1', 'MFLR8_1'),
+        ]
+
+    @pytest.fixture
+    def sidedefs(self, sectors):
+        return [
+            Sidedef(sectors[0], 'STONE2'),
+        ]
+
+    @pytest.fixture
+    def lindefs(self, sidedefs):
+        edges = [
+            ((128.0, 0.0), (64.0, 0.0)),
+            ((0.0, 128.0), (64.0, 128.0)),
+            ((0.0, 64.0), (64.0, 64.0)),
+            ((64.0, 128.0), (128.0, 128.0)),
+            ((64.0, 64.0), (128.0, 64.0)),
+            ((64.0, 128.0), (64.0, 64.0)),
+            ((64.0, 0.0), (0.0, 0.0)),
+            ((128.0, 128.0), (128.0, 64.0)),
+            ((0.0, 64.0), (0.0, 128.0)),
+            ((128.0, 64.0), (128.0, 0.0)),
+            ((64.0, 64.0), (64.0, 0.0)),
+            ((0.0, 0.0), (0.0, 64.0)),
+        ]
+        return [Linedef(Vertex(*v1), Vertex(*v2), sidefront=sidedefs[0], blocking=True) for v1, v2 in edges]
+
+    @pytest.fixture
+    def vertices(self):
+        return [
+            Vertex(0.0, 0.0),
+            Vertex(64.0, 0.0),
+            Vertex(64.0, 64.0),
+            Vertex(0.0, 64.0),
+            Vertex(128.0, 64.0),
+            Vertex(0.0, 128.0),
+            Vertex(128.0, 128.0),
+            Vertex(64.0, 128.0),
+            Vertex(128.0, 0.0),
+        ]
+
+    @pytest.fixture
+    def textmap(self, sectors, linedefs, vertices):
+        return Textmap(
+            namespace="zdoom",
+            vertices=frozenset(vertices),
+            sidedefs=frozenset({Sidedef(Sector(0, 128, 'MFLR8_1', 'MFLR8_1'), 'STONE2')}),
+            linedefs=frozenset(linedefs),
+            sectors=frozenset(sectors),
+            things=(Thing(1, 32.0, 32.0),))
