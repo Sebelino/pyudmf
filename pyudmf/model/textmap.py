@@ -138,7 +138,7 @@ class Textmap(object):
             sidedefs: AbstractSet[Sidedef] = frozenset(),
             linedefs: AbstractSet[Linedef] = frozenset(),
             sectors: AbstractSet[Sector] = frozenset(),
-            things: List[Thing] = tuple(),
+            things: Tuple[Thing] = tuple(),
     ):
         self.namespace = namespace
         self.vertices = frozenset(vertices)
