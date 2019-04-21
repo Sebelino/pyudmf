@@ -92,6 +92,7 @@ class Linedef(object):
         if sideback is not None:
             assert isinstance(sideback, Sidedef)
         self.sideback = sideback
+        assert isinstance(blocking, bool)
         self.blocking = blocking
 
     def __repr__(self):
