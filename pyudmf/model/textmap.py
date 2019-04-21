@@ -98,10 +98,13 @@ class Linedef(object):
     def __repr__(self):
         args = [self.v1, self.v2]
         if self.sidefront:
-            args.append(self.sidefront)
+            args.append("sidefront={}".format(self.sidefront))
         if self.sideback:
-            args.append(self.sideback)
-        return "Linedef({})".format(", ".join(str(a) for a in args))
+            args.append("sideback={}".format(self.sideback))
+        if self.blocking:
+            args.append("blocking={}".format(self.blocking))
+        s = "Linedef({})".format(", ".join(str(a) for a in args))
+        return s
 
     def __hash__(self):
         return hash(repr(self))
