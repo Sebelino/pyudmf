@@ -116,7 +116,7 @@ def ast2textmap(tu: TranslationUnit) -> (Textmap, Dict):
         linedefs=set(linedefs),
         sidedefs=set(sidedefs),
         sectors=set(sectors),
-        things=things,
+        things=tuple(things),
     )
 
     return textmap
