@@ -50,7 +50,7 @@ def block2linedef(block: Block, vertices: List[Vertex], sidedefs: List[Sidedef])
         v1,
         v2,
         sidefront=sidefront,
-        blocking=props['blocking'],
+        blocking=props.get('blocking', False),
     )
 
 
