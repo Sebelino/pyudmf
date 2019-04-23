@@ -177,12 +177,6 @@ class SebelinoVisage(Visage):
 
     @classmethod
     def _to_sidedefs(cls, sectors, ld2sd, cycles_sides, linedef_list):
-        # TODO
-        sidefronts = [
-            (i, Block("sidedef", cls.sd2blocklist(sd, sectors))) for i, sd in ld2sd.values()
-        ]
-        sidefronts = [b for i, b in sorted(sidefronts, key=lambda k: k[0])]
-
         cycle_to_sectorid = cls._assign_cycle_to_sectorid(linedef_list, cycles_sides)
 
         front_sector_ids = cls._ld2sdid(linedef_list, cycle_to_sectorid)
