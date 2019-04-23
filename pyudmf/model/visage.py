@@ -107,7 +107,7 @@ class SebelinoVisage(Visage):
         sidefronts = {sf for sf, _ in cycles_sides}
         sidebacks = {sb for _, sb in cycles_sides}
 
-        sidedefs = self._to_sidedefs(sectors, ld2sd, cycles_sides, [ld for _, _, _, ld in linedefs])
+        sidedefs = self._to_sidedefs(cycles_sides, [ld for _, _, _, ld in linedefs])
 
         linedefs = self._add_sidebacks(linedefs, {x for y in sidebacks for x in y})
 
@@ -176,7 +176,7 @@ class SebelinoVisage(Visage):
         return tuple(sectorids)
 
     @classmethod
-    def _to_sidedefs(cls, sectors, ld2sd, cycles_sides, linedef_list):
+    def _to_sidedefs(cls, cycles_sides, linedef_list):
         cycle_to_sectorid = cls._assign_cycle_to_sectorid(linedef_list, cycles_sides)
 
         front_sector_ids = cls._ld2sdid(linedef_list, cycle_to_sectorid)
