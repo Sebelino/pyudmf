@@ -85,10 +85,6 @@ class SebelinoVisage(Visage):
             s: (i, Block("sector", s2blocklist(s))) for i, s in enumerate(textmap.sectors)
         }
 
-        ld2sd = {
-            ld: (i, ld.sidefront) for i, ld in enumerate(textmap.linedefs)
-        }
-
         vertices = {
             v: (i, Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
@@ -104,7 +100,6 @@ class SebelinoVisage(Visage):
         cycles = textmap.cycles()
 
         cycles_sides = {self._linedef_orientation(c) for c in cycles}
-        sidefronts = {sf for sf, _ in cycles_sides}
         sidebacks = {sb for _, sb in cycles_sides}
 
         sidedefs = self._to_sidedefs(cycles_sides, [ld for _, _, _, ld in linedefs])
