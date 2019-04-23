@@ -186,7 +186,6 @@ class SebelinoVisage(Visage):
         cycle_to_sectorid = cls._assign_cycle_to_sectorid(linedef_list, cycles_sides)
 
         front_sector_ids = cls._ld2sdid(linedef_list, cycle_to_sectorid)
-        #front_sector_ids = (0, 0, 0, 0, 1, 1, 1)
 
         sidefronts = [
             Block("sidedef", [
@@ -197,7 +196,6 @@ class SebelinoVisage(Visage):
         ]
 
         back_sector_ids = cls._ld2sdid_back(linedef_list, cycle_to_sectorid)
-        #back_sector_ids = (1,)
 
         sidebacks = [
             Block("sidedef", [
