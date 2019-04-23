@@ -2,11 +2,11 @@
 
 from abc import abstractmethod, ABCMeta
 from decimal import Decimal
-from typing import List, Tuple, Dict, Any, Union
+from typing import Tuple, Dict, Any
 
 from pyudmf.grammar.tu import TranslationUnit, Assignment, Block
 from pyudmf.model.cycle import Cycle
-from pyudmf.model.textmap import Textmap, Thing, Vertex, Sector, Sidedef, Linedef
+from pyudmf.model.textmap import Textmap, Sector, Sidedef
 
 
 class Visage(metaclass=ABCMeta):
