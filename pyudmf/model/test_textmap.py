@@ -308,12 +308,15 @@ class TestDuosector(object):
             ((128.0, 64.0), (128.0, 0.0)),
             ((128.0, 0.0), (64.0, 0.0)),
         )
+        sideback_edges = {
+            ((64.0, 64.0), (64.0, 0.0)),
+        }
         return [
             Linedef(
                 Vertex(*v1),
                 Vertex(*v2),
                 sidefront=sidedefs[0],
-                sideback=None,
+                sideback=sidedefs[0] if (v1, v2) in sideback_edges else None,
                 blocking=True
             ) for v1, v2 in edges
         ]

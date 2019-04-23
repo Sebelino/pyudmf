@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-from decimal import Decimal
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from pyudmf.grammar.tu import TranslationUnit, Block, Assignment
 from pyudmf.model.textmap import Textmap, Vertex, Linedef, Sidedef, Sector, Thing
-from pyudmf.model.visage import Visage, SebelinoVisage
+from pyudmf.model.visage import SebelinoVisage
 
 
 def block2sector(block: Block):
@@ -46,10 +45,12 @@ def block2linedef(block: Block, vertices: List[Vertex], sidedefs: List[Sidedef])
     v1 = vertices[props['v1']]
     v2 = vertices[props['v2']]
     sidefront = sidedefs[props['sidefront']]
+    sideback = sidedefs[props['sideback']] if 'sideback' in props else None
     return Linedef(
         v1,
         v2,
         sidefront=sidefront,
+        sideback=sideback,
         blocking=props.get('blocking', False),
     )
 
