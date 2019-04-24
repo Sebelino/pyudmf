@@ -81,10 +81,6 @@ class SebelinoVisage(Visage):
                 blocklist.append(Assignment("yscaleceiling", Decimal("{0:.6f}".format(s.yscaleceiling))))
             return list(sorted(blocklist, key=lambda a: a.identifier))
 
-        sectors = {
-            s: (i, Block("sector", s2blocklist(s))) for i, s in enumerate(textmap.sectors)
-        }
-
         vertices = {
             v: (i, Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
@@ -125,7 +121,7 @@ class SebelinoVisage(Visage):
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
 
-        sector_list = [b for _, b in sectors.values()]
+        sector_list = [Block("sector", s2blocklist(s)) for s in textmap.sectors]
         sector_list *= len(cycles_sides)
 
         global_exprs = assignments + list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
