@@ -63,24 +63,6 @@ class SebelinoVisage(Visage):
             Assignment("namespace", textmap.namespace),
         ]
 
-        def s2blocklist(s: Sector):
-            blocklist = [
-                Assignment("heightceiling", s.heightceiling),
-                Assignment("texturefloor", s.texturefloor),
-                Assignment("textureceiling", s.textureceiling),
-            ]
-            if s.heightfloor:
-                blocklist.append(Assignment("heightfloor", s.heightfloor))
-            if s.xscalefloor != 1.0:
-                blocklist.append(Assignment("xscalefloor", Decimal("{0:.6f}".format(s.xscalefloor))))
-            if s.yscalefloor != 1.0:
-                blocklist.append(Assignment("yscalefloor", Decimal("{0:.6f}".format(s.yscalefloor))))
-            if s.xscaleceiling != 1.0:
-                blocklist.append(Assignment("xscaleceiling", Decimal("{0:.6f}".format(s.xscaleceiling))))
-            if s.yscaleceiling != 1.0:
-                blocklist.append(Assignment("yscaleceiling", Decimal("{0:.6f}".format(s.yscaleceiling))))
-            return list(sorted(blocklist, key=lambda a: a.identifier))
-
         vertices = {
             v: (i, Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
@@ -121,7 +103,7 @@ class SebelinoVisage(Visage):
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
 
-        sector_list = [Block("sector", s2blocklist(s)) for s in textmap.sectors]
+        sector_list = [Block("sector", self._s2blocklist(s)) for s in textmap.sectors]
         sector_list *= len(cycles_sides)
 
         global_exprs = assignments + list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
@@ -129,6 +111,25 @@ class SebelinoVisage(Visage):
         assert not any(e is None for e in global_exprs)
 
         return TranslationUnit(*global_exprs)
+
+    @classmethod
+    def _s2blocklist(cls, s: Sector):
+        blocklist = [
+            Assignment("heightceiling", s.heightceiling),
+            Assignment("texturefloor", s.texturefloor),
+            Assignment("textureceiling", s.textureceiling),
+        ]
+        if s.heightfloor:
+            blocklist.append(Assignment("heightfloor", s.heightfloor))
+        if s.xscalefloor != 1.0:
+            blocklist.append(Assignment("xscalefloor", Decimal("{0:.6f}".format(s.xscalefloor))))
+        if s.yscalefloor != 1.0:
+            blocklist.append(Assignment("yscalefloor", Decimal("{0:.6f}".format(s.yscalefloor))))
+        if s.xscaleceiling != 1.0:
+            blocklist.append(Assignment("xscaleceiling", Decimal("{0:.6f}".format(s.xscaleceiling))))
+        if s.yscaleceiling != 1.0:
+            blocklist.append(Assignment("yscaleceiling", Decimal("{0:.6f}".format(s.yscaleceiling))))
+        return list(sorted(blocklist, key=lambda a: a.identifier))
 
     @classmethod
     def _assign_cycle_to_sectorid(cls, linedef_list, cycles) -> Dict[Any, int]:
