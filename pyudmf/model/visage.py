@@ -63,11 +63,23 @@ class SebelinoVisage(Visage):
             Assignment("namespace", textmap.namespace),
         ]
 
-        global_exprs = assignments + self._add_rest(textmap)
+        global_exprs = assignments + self._add_things(textmap)
 
         assert not any(e is None for e in global_exprs)
 
         return TranslationUnit(*global_exprs)
+
+    def _add_things(self, textmap: Textmap):
+        # TODO multiplicity
+        things = {
+            t: Block("thing", [
+                Assignment("x", Decimal("{0:.3f}".format(t.x))),
+                Assignment("y", Decimal("{0:.3f}".format(t.y))),
+                Assignment("type", t.type),
+            ]) for t in textmap.things
+        }
+
+        return list(things.values()) + self._add_rest(textmap)
 
     def _add_rest(self, textmap: Textmap):
         vertices = {
@@ -96,15 +108,6 @@ class SebelinoVisage(Visage):
             v1, v2, (sfid, sbid), ld in linedefs
         }
 
-        # TODO multiplicity
-        things = {
-            t: Block("thing", [
-                Assignment("x", Decimal("{0:.3f}".format(t.x))),
-                Assignment("y", Decimal("{0:.3f}".format(t.y))),
-                Assignment("type", t.type),
-            ]) for t in textmap.things
-        }
-
         vertex_list = sorted(vertices.items(), key=lambda e: (e[0].y, e[0].x))
         vertex_list = [b for _, (_, b) in vertex_list]
 
@@ -113,7 +116,7 @@ class SebelinoVisage(Visage):
         sector_list = [Block("sector", self._s2blocklist(s)) for s in textmap.sectors]
         sector_list *= len(cycles_sides)
 
-        return list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
+        return vertex_list + linedef_list + sidedefs + sector_list
 
     @classmethod
     def _s2blocklist(cls, s: Sector):
