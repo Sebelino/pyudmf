@@ -63,9 +63,13 @@ class SebelinoVisage(Visage):
             Assignment("namespace", textmap.namespace),
         ]
 
-        return self._add_rest(textmap, assignments)
+        global_exprs = assignments + self._add_rest(textmap)
 
-    def _add_rest(self, textmap: Textmap, ast: list):
+        assert not any(e is None for e in global_exprs)
+
+        return TranslationUnit(*global_exprs)
+
+    def _add_rest(self, textmap: Textmap):
         vertices = {
             v: (i, Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
@@ -109,11 +113,7 @@ class SebelinoVisage(Visage):
         sector_list = [Block("sector", self._s2blocklist(s)) for s in textmap.sectors]
         sector_list *= len(cycles_sides)
 
-        global_exprs = ast + list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
-
-        assert not any(e is None for e in global_exprs)
-
-        return TranslationUnit(*global_exprs)
+        return list(things.values()) + vertex_list + linedef_list + sidedefs + sector_list
 
     @classmethod
     def _s2blocklist(cls, s: Sector):
