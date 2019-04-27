@@ -118,12 +118,13 @@ class SebelinoVisage(Visage):
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
 
-        return linedef_list + self._add_sidedefs(textmap, sidedefs, len(cycles))
+        return linedef_list + self._add_sidedefs(textmap, sidedefs)
 
-    def _add_sidedefs(self, textmap: Textmap, sidedefs, cycle_count: int):
-        return sidedefs + self._add_sectors(textmap, cycle_count)
+    def _add_sidedefs(self, textmap: Textmap, sidedefs):
+        return sidedefs + self._add_sectors(textmap)
 
-    def _add_sectors(self, textmap: Textmap, cycle_count: int):
+    def _add_sectors(self, textmap: Textmap):
+        cycle_count = len(textmap.cycles())  # TODO memoization
 
         sector_list = [Block("sector", self._s2blocklist(s)) for s in textmap.sectors]
         sector_list *= cycle_count
