@@ -83,19 +83,21 @@ class SebelinoVisage(Visage):
 
     def _add_vertices(self, textmap: Textmap):
         vertices = {
-            v: (i, Block("vertex", [
+            v: Block("vertex", [
                 Assignment("x", Decimal("{0:.3f}".format(v.x))),
                 Assignment("y", Decimal("{0:.3f}".format(v.y))),
-            ])) for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))
+            ]) for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))
         }
 
         vertex_list = sorted(vertices.items(), key=lambda e: (e[0].y, e[0].x))
-        vertex_list = [b for _, (_, b) in vertex_list]
+        vertex_list = [b for _, b in vertex_list]
 
-        return vertex_list + self._add_rest(textmap, vertices)
+        return vertex_list + self._add_rest(textmap)
 
-    def _add_rest(self, textmap: Textmap, vertices):
-        linedefs = {(vertices[ld.v1][0], vertices[ld.v2][0], ld) for ld in textmap.linedefs}
+    def _add_rest(self, textmap: Textmap):
+        vertices = {v: i for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))}
+
+        linedefs = {(vertices[ld.v1], vertices[ld.v2], ld) for ld in textmap.linedefs}
 
         linedefs = [(v1, v2, sdid, ld) for sdid, (v1, v2, ld) in
                     enumerate(sorted(linedefs, key=lambda e: (e[0], e[1])))]
@@ -110,7 +112,7 @@ class SebelinoVisage(Visage):
         linedefs = self._add_sidebacks(linedefs, {x for y in sidebacks for x in y})
 
         linedefs = {
-            (vertices[ld.v1][0], vertices[ld.v2][0], Block("linedef", self._to_block(sfid, sbid, ld, vertices))) for
+            (vertices[ld.v1], vertices[ld.v2], Block("linedef", self._to_block(sfid, sbid, ld, vertices))) for
             v1, v2, (sfid, sbid), ld in linedefs
         }
 
@@ -231,8 +233,8 @@ class SebelinoVisage(Visage):
     def _to_block(cls, sfid, sbid, ld, vertices):
         lists = []
         lists += [
-            Assignment("v1", vertices[ld.v1][0]),
-            Assignment("v2", vertices[ld.v2][0]),
+            Assignment("v1", vertices[ld.v1]),
+            Assignment("v2", vertices[ld.v2]),
             Assignment("sidefront", sfid),
         ]
         lists += [] if sbid is None else [Assignment("sideback", sbid)]
