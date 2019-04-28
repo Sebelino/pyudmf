@@ -105,9 +105,8 @@ class SebelinoVisage(Visage):
         cycles = textmap.cycles()
 
         cycles_sides = {self._linedef_orientation(c) for c in cycles}
-        sidebacks = {sb for _, sb in cycles_sides}
 
-        sidedefs = self._to_sidedefs(cycles_sides, [ld for _, _, _, ld in linedefs])
+        sidebacks = {sb for _, sb in cycles_sides}
 
         linedefs = self._add_sidebacks(linedefs, {x for y in sidebacks for x in y})
 
@@ -118,9 +117,22 @@ class SebelinoVisage(Visage):
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
 
-        return linedef_list + self._add_sidedefs(textmap, sidedefs)
+        return linedef_list + self._add_sidedefs(textmap)
 
-    def _add_sidedefs(self, textmap: Textmap, sidedefs):
+    def _add_sidedefs(self, textmap: Textmap):
+        vertices = {v: i for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))}
+
+        linedefs = {(vertices[ld.v1], vertices[ld.v2], ld) for ld in textmap.linedefs}
+
+        linedefs = [(v1, v2, sdid, ld) for sdid, (v1, v2, ld) in
+                    enumerate(sorted(linedefs, key=lambda e: (e[0], e[1])))]
+
+        cycles = textmap.cycles()
+
+        cycles_sides = {self._linedef_orientation(c) for c in cycles}
+
+        sidedefs = self._to_sidedefs(cycles_sides, [ld for _, _, _, ld in linedefs])
+
         return sidedefs + self._add_sectors(textmap)
 
     def _add_sectors(self, textmap: Textmap):
