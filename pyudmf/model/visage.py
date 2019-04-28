@@ -95,24 +95,30 @@ class SebelinoVisage(Visage):
         return vertex_list + self._add_linedefs(textmap)
 
     def _add_linedefs(self, textmap: Textmap):
-        vertices = {v: i for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))}
+        v2id = {v: i for i, v in enumerate(sorted(textmap.vertices, key=lambda e: (e.y, e.x)))}
 
-        linedefs = {(vertices[ld.v1], vertices[ld.v2], ld) for ld in textmap.linedefs}
+        # Add v1, v2 indices
+        linedefs = {(v2id[ld.v1], v2id[ld.v2], ld) for ld in textmap.linedefs}
 
-        linedefs = [(v1, v2, sdid, ld) for sdid, (v1, v2, ld) in
-                    enumerate(sorted(linedefs, key=lambda e: (e[0], e[1])))]
+        # Sort by v1, v2 indices
+        linedefs = list(sorted(linedefs, key=lambda e: (e[0], e[1])))
 
-        cycles = textmap.cycles()
+        # To list of dicts
+        linedefs = [(ld, dict(v1=v1, v2=v2)) for v1, v2, ld in linedefs]
 
-        cycles_sides = {self._linedef_orientation(c) for c in cycles}
+        # Add sidefront indices
+        for sdid, (ld, dct) in enumerate(linedefs):
+            dct['sidefront'] = sdid
 
-        sidebacks = {sb for _, sb in cycles_sides}
-
-        linedefs = self._add_sidebacks(linedefs, {x for y in sidebacks for x in y})
+        # Add sideback indices
+        first_sideback_index = max(dct['sidefront'] for ld, dct in linedefs) + 1
+        sideback_linedefs = ((ld, dct) for ld, dct in linedefs if ld.sideback)
+        for sdid, (ld, dct) in enumerate(sideback_linedefs, first_sideback_index):
+            dct['sideback'] = sdid
 
         linedefs = {
-            (vertices[ld.v1], vertices[ld.v2], Block("linedef", self._to_block(sfid, sbid, ld, vertices))) for
-            v1, v2, (sfid, sbid), ld in linedefs
+            (v2id[ld.v1], v2id[ld.v2], Block("linedef", self._to_block(dct['sidefront'], dct.get('sideback'), ld, v2id)))
+            for ld, dct in linedefs
         }
 
         linedef_list = [b for _, _, b in sorted(linedefs, key=lambda e: (e[0], e[1]))]
