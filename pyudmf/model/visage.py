@@ -117,7 +117,7 @@ class SebelinoVisage(Visage):
             dct['sideback'] = sdid
 
         linedefs = {
-            (v2id[ld.v1], v2id[ld.v2], Block("linedef", self._to_block(dct['sidefront'], dct.get('sideback'), ld, v2id)))
+            (v2id[ld.v1], v2id[ld.v2], Block("linedef", self._to_block(dct, ld, v2id)))
             for ld, dct in linedefs
         }
 
@@ -256,13 +256,14 @@ class SebelinoVisage(Visage):
         return new_linedefs
 
     @classmethod
-    def _to_block(cls, sfid, sbid, ld, vertices):
+    def _to_block(cls, dct, ld, vertices):
         lists = []
         lists += [
             Assignment("v1", vertices[ld.v1]),
             Assignment("v2", vertices[ld.v2]),
-            Assignment("sidefront", sfid),
+            Assignment("sidefront", dct['sidefront']),
         ]
-        lists += [] if sbid is None else [Assignment("sideback", sbid)]
+        if "sideback" in dct:
+            lists.append(Assignment("sideback", dct["sideback"]))
         lists += [Assignment("blocking", ld.blocking)]
         return lists
