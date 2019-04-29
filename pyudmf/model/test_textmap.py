@@ -377,7 +377,7 @@ class TestTwoByTwoSector(object):
         ]
 
     @pytest.fixture
-    def lindefs(self, sidedefs):
+    def linedefs(self, sidedefs):
         edges = [
             ((128.0, 0.0), (64.0, 0.0)),
             ((0.0, 128.0), (64.0, 128.0)),
