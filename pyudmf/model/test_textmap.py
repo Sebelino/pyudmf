@@ -365,15 +365,162 @@ class TestDuosector(object):
 
 class TestTwoByTwoSector(object):
     @pytest.fixture
+    def ast(self) -> TranslationUnit:
+        return TranslationUnit(
+            Assignment("namespace", "zdoom"),
+            Block("thing", [
+                Assignment("x", Decimal('32.000')),
+                Assignment("y", Decimal('32.000')),
+                Assignment("type", 1),
+            ]),
+
+            Block("vertex", [
+                Assignment("x", Decimal('0.0')),
+                Assignment("y", Decimal('0.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('64.0')),
+                Assignment("y", Decimal('0.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('64.0')),
+                Assignment("y", Decimal('64.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('0.0')),
+                Assignment("y", Decimal('64.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('128.0')),
+                Assignment("y", Decimal('64.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('0.0')),
+                Assignment("y", Decimal('128.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('128.0')),
+                Assignment("y", Decimal('128.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('64.0')),
+                Assignment("y", Decimal('128.0')),
+            ]),
+            Block("vertex", [
+                Assignment("x", Decimal('128.0')),
+                Assignment("y", Decimal('0.0')),
+            ]),
+
+            # TODO
+            Block("linedef", [
+                Assignment("v1", 0),
+                Assignment("v2", 3),
+                Assignment("sidefront", 0),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 1),
+                Assignment("v2", 0),
+                Assignment("sidefront", 1),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 2),
+                Assignment("v2", 1),
+                Assignment("sidefront", 2),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 3),
+                Assignment("v2", 4),
+                Assignment("sidefront", 3),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 4),
+                Assignment("v2", 1),
+                Assignment("sidefront", 4),
+                Assignment("sideback", 7),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 4),
+                Assignment("v2", 5),
+                Assignment("sidefront", 5),
+                Assignment("blocking", True),
+            ]),
+            Block("linedef", [
+                Assignment("v1", 5),
+                Assignment("v2", 2),
+                Assignment("sidefront", 6),
+                Assignment("blocking", True),
+            ]),
+
+            Block("sidedef", [
+                Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 0),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+
+            Block("sector", [
+                Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
+            ]),
+            Block("sector", [
+                Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
+            ]),
+            Block("sector", [
+                Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
+            ]),
+            Block("sector", [
+                Assignment("heightceiling", 128),
+                Assignment("textureceiling", "CEIL3_3"),
+                Assignment("texturefloor", "CEIL3_3"),
+            ]),
+        )
+
+    @pytest.fixture
     def sectors(self):
         return [
-            Sector(0, 128, 'MFLR8_1', 'MFLR8_1'),
+            Sector(0, 128, 'CEIL3_3', 'CEIL3_3'),
         ]
 
     @pytest.fixture
     def sidedefs(self, sectors):
         return [
-            Sidedef(sectors[0], 'STONE2'),
+            Sidedef(sectors[0], 'MARBFACE'),
         ]
 
     @pytest.fixture
@@ -417,3 +564,15 @@ class TestTwoByTwoSector(object):
             linedefs=frozenset(linedefs),
             sectors=frozenset(sectors),
             things=(Thing(1, 32.0, 32.0),))
+
+    @pytest.mark.skip()
+    def test_ast2textmap(self, ast, textmap):
+        returned = ast2textmap(ast)
+
+        assert textmap.namespace == returned.namespace
+        assert textmap.vertices == returned.vertices
+        assert textmap.linedefs == returned.linedefs
+        assert textmap.sidedefs == returned.sidedefs
+        assert textmap.sectors == returned.sectors
+        assert textmap.things == returned.things
+        assert textmap == returned
