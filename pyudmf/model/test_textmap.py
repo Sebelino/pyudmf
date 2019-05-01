@@ -375,40 +375,40 @@ class TestTwoByTwoSector(object):
             ]),
 
             Block("vertex", [
-                Assignment("x", Decimal('0.0')),
-                Assignment("y", Decimal('0.0')),
+                Assignment("x", Decimal('0.000')),
+                Assignment("y", Decimal('0.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('64.0')),
-                Assignment("y", Decimal('0.0')),
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('0.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('64.0')),
-                Assignment("y", Decimal('64.0')),
+                Assignment("x", Decimal('128.000')),
+                Assignment("y", Decimal('0.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('0.0')),
-                Assignment("y", Decimal('64.0')),
+                Assignment("x", Decimal('0.000')),
+                Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('128.0')),
-                Assignment("y", Decimal('64.0')),
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('0.0')),
-                Assignment("y", Decimal('128.0')),
+                Assignment("x", Decimal('128.000')),
+                Assignment("y", Decimal('64.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('128.0')),
-                Assignment("y", Decimal('128.0')),
+                Assignment("x", Decimal('0.000')),
+                Assignment("y", Decimal('128.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('64.0')),
-                Assignment("y", Decimal('128.0')),
+                Assignment("x", Decimal('64.000')),
+                Assignment("y", Decimal('128.000')),
             ]),
             Block("vertex", [
-                Assignment("x", Decimal('128.0')),
-                Assignment("y", Decimal('0.0')),
+                Assignment("x", Decimal('128.000')),
+                Assignment("y", Decimal('128.000')),
             ]),
 
             # TODO
