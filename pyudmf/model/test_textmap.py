@@ -411,7 +411,6 @@ class TestTwoByTwoSector(object):
                 Assignment("y", Decimal('128.000')),
             ]),
 
-            # TODO
             Block("linedef", [
                 Assignment("v1", 0),
                 Assignment("v2", 3),
@@ -506,6 +505,10 @@ class TestTwoByTwoSector(object):
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sidedef", [
+                Assignment("sector", 2),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
                 Assignment("sector", 0),
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
@@ -518,7 +521,35 @@ class TestTwoByTwoSector(object):
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
             Block("sidedef", [
+                Assignment("sector", 2),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 2),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 3),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 3),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 2),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
                 Assignment("sector", 1),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 3),
+                Assignment("texturemiddle", "MARBFACE"),
+            ]),
+            Block("sidedef", [
+                Assignment("sector", 3),
                 Assignment("texturemiddle", "MARBFACE"),
             ]),
 
@@ -572,7 +603,21 @@ class TestTwoByTwoSector(object):
             ((64.0, 64.0), (64.0, 0.0)),
             ((0.0, 0.0), (0.0, 64.0)),
         ]
-        return [Linedef(Vertex(*v1), Vertex(*v2), sidefront=sidedefs[0], blocking=True) for v1, v2 in edges]
+        sideback_edges = {
+            ((0.0, 64.0), (64.0, 64.0)),
+            ((64.0, 64.0), (64.0, 0.0)),
+            ((64.0, 64.0), (128.0, 64.0)),
+            ((64.0, 128.0), (64.0, 64.0)),
+        }
+        return [
+            Linedef(
+                Vertex(*v1),
+                Vertex(*v2),
+                sidefront=sidedefs[0],
+                sideback=sidedefs[0] if (v1, v2) in sideback_edges else None,
+                blocking=True
+            ) for v1, v2 in edges
+        ]
 
     @pytest.fixture
     def vertices(self):
