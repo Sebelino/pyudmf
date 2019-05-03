@@ -364,6 +364,16 @@ class TestDuosector(object):
 
 
 class TestTwoByTwoSector(object):
+    """
+    (0,128) -> (64,128) -> (128,128)
+      ^           |          |
+      |           v          v
+    (0,64) --> (64,64) --> (128,64)
+      ^           |          |
+      |           v          v
+    (0,0) <--- (64,0) <--- (128,0)
+    """
+
     @pytest.fixture
     def ast(self) -> TranslationUnit:
         return TranslationUnit(
