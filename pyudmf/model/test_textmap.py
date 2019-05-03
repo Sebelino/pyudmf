@@ -634,16 +634,15 @@ class TestTwoByTwoSector(object):
         ]
 
     @pytest.fixture
-    def textmap(self, sectors, linedefs, vertices):
+    def textmap(self, sectors, linedefs, vertices, sidedefs):
         return Textmap(
             namespace="zdoom",
             vertices=frozenset(vertices),
-            sidedefs=frozenset({Sidedef(Sector(0, 128, 'MFLR8_1', 'MFLR8_1'), 'STONE2')}),
+            sidedefs=frozenset(sidedefs),
             linedefs=frozenset(linedefs),
             sectors=frozenset(sectors),
             things=(Thing(1, 32.0, 32.0),))
 
-    @pytest.mark.skip()
     def test_ast2textmap(self, ast, textmap):
         returned = ast2textmap(ast)
 
