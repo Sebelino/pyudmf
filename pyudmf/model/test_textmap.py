@@ -663,3 +663,14 @@ class TestTwoByTwoSector(object):
         assert textmap.sectors == returned.sectors
         assert textmap.things == returned.things
         assert textmap == returned
+
+    def test_textmap2ast(self, textmap, ast):
+        visage = SebelinoVisage()
+        returned = visage.textmap2ast(textmap)
+
+        assert [x for x in ast if x.identifier == "thing"] == [x for x in returned if x.identifier == "thing"]
+        assert [x for x in ast if x.identifier == "vertex"] == [x for x in returned if x.identifier == "vertex"]
+        assert [x for x in ast if x.identifier == "linedef"] == [x for x in returned if x.identifier == "linedef"]
+        assert [x for x in ast if x.identifier == "sidedef"] == [x for x in returned if x.identifier == "sidedef"]
+        assert [x for x in ast if x.identifier == "sector"] == [x for x in returned if x.identifier == "sector"]
+        assert ast == returned
