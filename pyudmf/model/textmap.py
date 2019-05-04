@@ -224,7 +224,7 @@ class Textmap(object):
             if cycle:
                 cycles.add(cycle)
                 cycle_subset = {ld for ld in cycle if
-                                self.degree(ld.v1, linedefs) == 2 and self.degree(ld.v2, linedefs) == 2}
+                                self.degree(ld.v1, linedefs) == 2 or self.degree(ld.v2, linedefs) == 2}
                 linedefs = linedefs.difference(cycle_subset)
         cycles = frozenset([Cycle(c) for c in cycles])
         cycles = frozenset([self.negatively_orient(c) for c in cycles])
