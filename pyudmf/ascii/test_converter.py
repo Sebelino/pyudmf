@@ -82,9 +82,9 @@ def sample_linedefs(sample_vertices, sample_sidedefs):
 
 @pytest.fixture()
 def sample_textmap(sample_vertices, sample_sectors, sample_sidedefs, sample_linedefs):
-    things = [
+    things = (
         Thing(1, 32, 32),
-    ]
+    )
     return Textmap(
         vertices=set(v for row in sample_vertices for v in row),
         sectors=set(sample_sectors),
